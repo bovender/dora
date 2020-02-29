@@ -130,6 +130,15 @@ Please ensure your secrets are safe.
 
 ### Using ENV in your Rails app
 
+Rails secret:
+
+```yaml
+production:
+  secret_key_base: <%= ENV['RAILS_SECRET_KEY'] %>
+```
+
+Database:
+
 ```yaml
 # config/database.yml
 # Keep in mind that this is parsed with ERB.
@@ -140,6 +149,8 @@ production:
   username: <%= ENV['RAILS_DB_USER'] %>
   password: <%= ENV['RAILS_DB_PASS'] %>
 ```
+
+SMTP server:
 
 ```ruby
 # config/environments/production.rb
