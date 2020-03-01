@@ -15,19 +15,18 @@ if [ -a $FLAG_FILE ]; then
   exit
 fi
 
-date --rfc-3339=seconds > $FLAG_FILE
 echo "Bootstrapping container... $(date --rfc-3339=seconds)"
 set -x -e
 
-git clone --depth 1 -b $GIT_BRANCH https://${GIT_USER}${GIT_USER:+:}${GIT_PASS}${GIT_USER:+@}${GIT_REPO} $APP_DIR
+git clone --depth 1 -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} $APP_DIR
 chown -R app:app ${APP_DIR}
 
 chown -R app:app /shared
 mkdir -p /shared/{bundle,log}
-ln -sf /shared/bundle vendor/bundle &&\
-ln -sf /shared/log log
 
 cd $APP_DIR
+ln -sf /shared/bundle vendor/bundle &&\
+ln -sf /shared/log log
 setuser app bundle config set deployment true
 setuser app bundle config set with production
 setuser app bundle config set without test:development
@@ -37,3 +36,4 @@ setuser app bundle exec rails assets:precompile
 
 set +x
 echo "Done bootstrapping!.       $(date --rfc-3339=seconds)"
+date --rfc-3339=seconds > $FLAG_FILE

@@ -1,7 +1,7 @@
 # See https://github.com/phusion/passenger-docker
 FROM phusion/passenger-ruby26:1.0.9
 
-ENV APP_NAME ${APP_NAME}
+ENV APP_NAME "app"
 ENV APP_DIR "/home/app/${APP_NAME}"
 ENV RAILS_ENV "production"
 ENV SECRET_KEY_BASE "SECRET_KEY_BASE must be defined"
