@@ -22,11 +22,15 @@ git clone --depth 1 -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PAS
 chown -R app:app ${APP_DIR}
 
 chown -R app:app /shared
-mkdir -p /shared/{bundle,log}
+
+# NB: When invoked with the `-p` flag, mkdir will not
+# raise an error if the directory exists already.
+mkdir -p /shared/{bundle,log,uploads}
 
 cd $APP_DIR
 ln -sf /shared/bundle vendor/bundle &&\
 ln -sf /shared/log log
+ln -sf /shared/uploads uploads
 setuser app bundle config set deployment true
 setuser app bundle config set with production
 setuser app bundle config set without test:development
