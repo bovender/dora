@@ -48,9 +48,9 @@ RUN mkdir -p /etc/my_init.d
 ADD bootstrap-container.sh /etc/my_init.d/10_bootstrap_container.sh
 RUN chmod +x /etc/my_init.d/10_bootstrap_container.sh
 
-RUN mkdir -p /etc/services/sidekiq
-ADD run-sidekiq.sh /etc/services/sidekiq/run
-RUN chmod +x /etc/services/sidekiq/run
+RUN mkdir -p /etc/service/sidekiq
+ADD run-sidekiq.sh /etc/service/sidekiq/run
+RUN chmod +x /etc/service/sidekiq/run
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
