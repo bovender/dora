@@ -279,6 +279,24 @@ is needed or not. This avoids unnecessary and possibly time
 consuming tasks such as precompiling assets, migrating the
 database and so on.
 
+A note on the **user name** and **application directory**:
+`passenger-docker` creates a user called `app`. `dora`
+installs the application into a directory in this user's
+home directory that is also called `app`. Thus, the directory
+where the Rails application is installed is:
+
+```bash
+/home/app/app
+```
+
+Initially I had intended to make the application directory
+configurable to avoid possible confusion with the `app`
+user, but it would have been overly complicated to
+adjust the Nginx server configuration to this custom
+directory, at least if an environment variable was involved.
+Therefore, the `app` directory is now hard-coded into
+`dora`.
+
 ## Further reading
 - [Discourse's Docker container][Discourse]
 
@@ -299,4 +317,5 @@ MIT license. See [`LICENSE`](LICENSE).
 [passenger-docker]: https://github.com/phusion/passenger-docker
 [Passenger]: https://www.phusionpassenger.com
 [Phusion]: https://www.phusion.nl
+[Ruby on Rails]: https://rubyonrails.org
 [Sidekiq]: https://github.com/mperham/sidekiq

@@ -16,12 +16,13 @@ if [ -a $FLAG_FILE ]; then
 fi
 
 echo "Bootstrapping container... $(date --rfc-3339=seconds)"
+APP_DIR=/home/app/app
+echo "Application directory:     $APP_DIR"
 set -x -e
 
 git clone --depth 1 -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||
 	(echo "Directory `$APP_DIR` exists already, attempting to pull..."; git -C "$APP_DIR" pull)
-chown -R app:app ${APP_DIR}
-
+chown -R app:app $APP_DIR
 chown -R app:app /shared
 
 # NB: When invoked with the `-p` flag, mkdir will not
