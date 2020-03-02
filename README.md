@@ -26,6 +26,7 @@ Customization is done with environment variables.
 | Environment variable | Use | Default
 |------|------|------
 | `APP_NAME` | Application name | `app`
+| `PASSENGER_APP_ENV` | Rails environment (this is a `passenger-docker` variable) | `production`
 | `GIT_REPO` | URL of the Git repository |
 | `GIT_BRANCH` | Branch to check out of the Git repository | `master`
 | `GIT_USER` | Git user that has read access for the repository (opt.) |
@@ -63,7 +64,9 @@ else.
       - "{{ docker.volume_dir }}/MY_APP:/shared"
     environment:
       APP_NAME: "{{ MY_APP.name }}"
+      PASSENGER_APP_ENV: "{{ MY_APP.rails_env }}"
       GIT_REPO: "{{ MY_APP.git.repo}} "
+      GIT_BRANCH: "{{ MY_APP.git.branch}} "
       GIT_USER: "{{ MY_APP.git.user}} "
       GIT_PASS: "{{ MY_APP.git.pass}} "
       RAILS_DB_HOST: "{{ MY_APP.db.host }}"
@@ -101,9 +104,11 @@ ports:
   MY_APP: 8080
 MY_APP:
   name:
+  rails_env:
   secret_key:
   git:
     repo:
+    branch:
     user:
     pass:
   db:
