@@ -17,6 +17,17 @@ ENV RAILS_DB_NAME ${APP_NAME}
 ENV RAILS_DB_USER ${APP_NAME}
 ENV RAILS_DB_PASS "RAILS_DB_PASS must be defined"
 
+# Install nodejs in passenger-docker's way
+RUN mkdir /pd_build
+ADD nodejs.sh /pd_build
+ADD buildconfig /pd_build
+RUN /pd_build/nodejs.sh
+
+# Install yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list &&\
+    apt update && apt install yarn
+
 # This is from passenger-docker's README.
 ENV HOME /root
 
