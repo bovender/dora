@@ -240,9 +240,9 @@ pull the app from the [Git][] repository, migrate the database,
 precompile assets, and restart [Passenger][].
 
 There is no good contingency plan for when any of these steps
-fail. Rolling back the application to a former version is
-currently not supported (unlike, for example, when you
-deploy your app using [Capistrano][].)
+fail. The `upgrade-app.sh` script provides only very limited
+support to roll back the application to a previous state.
+One tool that is definitively better at this is [Capistrano][].
 
 ## Data persistence
 
