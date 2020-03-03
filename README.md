@@ -27,6 +27,8 @@ Customization is done with environment variables.
 |------|------|------
 | `APP_NAME` | Application name | `app`
 | `PASSENGER_APP_ENV` | Rails environment (this is a `passenger-docker` variable) | `production`
+| `RAILS_PRECOMPILE_ASSETS` | Whether to precompile Rails assets | `true`
+| `GIT_PULL` | Indicates whether to clone and pull the app from a Git repository (*must* be `false` to suppress cloning and pulling) | `true`
 | `GIT_REPO` | URL of the Git repository |
 | `GIT_BRANCH` | Branch to check out of the Git repository | `master`
 | `GIT_USER` | Git user that has read access for the repository (opt.) |
@@ -253,6 +255,44 @@ into `/shared`:
 - `/home/app/app/vendor/bundle` (which contains the bundled Gems)
 - `/home/app/app/log` (Rails' log files)
 
+## development and testing
+
+To use `dora` for development and testing, you may want to
+set `$GIT_PULL` to `false` and mount your entire Rails application's
+directory onto `/home/app`.
+
+Example `docker-compose.yml` file:
+
+```yaml
+version: "3.7"
+services:
+  db:
+    container_name: db
+    image: postgres:12
+    restart: always
+    volumes:
+      - ./tmp/docker/db:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_PASSWORD=app_dev"
+  app_dev:
+    container_name: app_dev
+    build:
+      context: ../dora
+    ports:
+      - "127.0.0.1:3000:80"
+    volumes:
+      - ./:/home/app/
+    environment:
+      APP_NAME: "app_dev"
+      GIT_PULL: "false"
+      PASSENGER_APP_ENV: "development"
+      RAILS_DB_HOST: "db"
+      RAILS_DB_NAME: "app_dev"
+      RAILS_DB_USER: "app_dev"
+      RAILS_DB_PASS: "app_dev"
+    depends_on:
+      - db
+```
 
 ## Troubleshooting
 

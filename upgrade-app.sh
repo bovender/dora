@@ -8,7 +8,7 @@ APP_DIR=/home/app/app
 cd $APP_DIR
 PREVIOUS_VERSION=$(git describe 2>/dev/null || git rev-parse HEAD)
 (
-  git pull &&\
+  (if [ "$GIT_PULL" != "false" ]; then git pull; fi) &&\
   bundle install &&\
   yarn install --check-files &&\
   bundle exec rails db:migrate &&\

@@ -2,12 +2,13 @@
 FROM phusion/passenger-ruby26:1.0.9
 
 ENV APP_NAME "app"
-ENV RAILS_ENV "production"
-ENV SECRET_KEY_BASE "SECRET_KEY_BASE must be defined"
 ENV GIT_USER ""
 ENV GIT_PASS ""
 ENV GIT_REPO "GIT_REPO must be defined"
 ENV GIT_BRANCH "master"
+ENV GIT_PULL "true"
+ENV SECRET_KEY_BASE "SECRET_KEY_BASE must be defined"
+ENV RAILS_PRECOMPILE_ASSETS "true"
 ENV RAILS_SMTP_HOST "RAILS_SMTP_HOST must be defined"
 ENV RAILS_SMTP_USER ${APP_NAME}
 ENV RAILS_SMTP_PASS "RAILS_SMTP_PASS must be defined"
@@ -25,7 +26,7 @@ RUN /pd_build/nodejs.sh
 # Install yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list &&\
-    apt update && apt install yarn
+    apt-get update && apt-get install yarn
 
 # This is from passenger-docker's README.
 ENV HOME /root

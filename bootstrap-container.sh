@@ -15,36 +15,65 @@ if [ -a $FLAG_FILE ]; then
   exit
 fi
 
-echo "Bootstrapping container... $(date --rfc-3339=seconds)"
+echo "= Bootstrapping container... $(date --rfc-3339=seconds)"
 APP_DIR=/home/app/app
-echo "Application directory:     $APP_DIR"
+echo "= Application directory:     $APP_DIR"
 set -x -e
 
-git clone --depth 1 -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||
-	(echo "Directory `$APP_DIR` exists already, attempting to pull..."; git -C "$APP_DIR" pull)
-chown -R app:app $APP_DIR
-chown -R app:app /shared
-
-# NB: When invoked with the `-p` flag, mkdir will not
-# raise an error if the directory exists already.
-# We keep gems and node modules out of the container
-# for faster rebuilding.
-mkdir -p /shared/{bundle,log,node_modules,uploads}
+if [ "$GIT_PULL" != "false" ]; then
+  git clone --depth 1 -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||
+  	(echo "= Directory `$APP_DIR` exists already, attempting to pull..."; git -C "$APP_DIR" pull)
+fi
 
 cd $APP_DIR
-rm -rf vendor/bundle && ln -s /shared/bundle vendor/bundle
-for d in log node_modules uploads; do
-  rm -rf $d
-  ln -s /shared/$d $d
-done
-setuser app bundle config set deployment true
-setuser app bundle config set with production
-setuser app bundle config set without test:development
+
+case $PASSENGER_APP_ENV in
+  production)
+    BUNDLE_WITHOUT="test:development"
+    BUNDLE_DEPLOY="true"
+    ;;
+  development)
+    BUNDLE_WITHOUT="test:production"
+    BUNDLE_DEPLOY="false"
+    ;;
+  test)
+    BUNDLE_WITHOUT="production:development"
+    BUNDLE_DEPLOY="false"
+    ;;
+esac
+
+# If we do not clone and pull a repository, we can assume that
+# the app directory has bene mounted into the container, in
+# which case we do not need to link reusable directories to
+# the outside world.
+if [ "$GIT_PULL" == "false" ]; then
+  set +x; echo "= Not pulling repository; not linking directories!"; set -x
+else
+  # NB: When invoked with the `-p` flag, mkdir will not
+  # raise an error if the directory exists already.
+  # We keep gems and node modules out of the container
+  # for faster rebuilding.
+  mkdir -p /shared/{bundle,log,node_modules,uploads}
+  for d in log node_modules uploads; do
+    rm -rf $d
+    ln -s /shared/$d $d
+  done
+  rm -rf vendor/bundle && ln -s /shared/bundle vendor/bundle
+  chown -R app:app /shared
+  chown -R app:app $APP_DIR
+fi
+
+setuser app bundle config set deployment $BUNDLE_DEPLOY
+setuser app bundle config set with $PASSENGER_APP_ENV
+setuser app bundle config set without $BUNDLE_WITHOUT
 setuser app bundle install
-setuser app bundle exec rails db:migrate
 setuser app yarn install --check-files
-setuser app bundle exec rails assets:precompile
+setuser app bundle exec rails db:migrate || setuser app bundle exec rails db:schema:load
+
+if [ "$RAILS_PRECOMPILE_ASSETS" == "true" ]; then
+  setuser app bundle exec rails assets:precompile
+fi
 
 set +x
-echo "Done bootstrapping!.       $(date --rfc-3339=seconds)"
+echo "= Done bootstrapping!.       $(date --rfc-3339=seconds)"
 date --rfc-3339=seconds > $FLAG_FILE
