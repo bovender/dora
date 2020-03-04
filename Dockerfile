@@ -4,18 +4,18 @@ FROM phusion/passenger-ruby26:1.0.9
 ENV APP_NAME "app"
 ENV GIT_USER ""
 ENV GIT_PASS ""
-ENV GIT_REPO "GIT_REPO must be defined"
+ENV GIT_REPO ""
 ENV GIT_BRANCH "master"
 ENV GIT_PULL "true"
-ENV SECRET_KEY_BASE "SECRET_KEY_BASE must be defined"
+ENV SECRET_KEY_BASE ""
 ENV RAILS_PRECOMPILE_ASSETS "true"
-ENV RAILS_SMTP_HOST "RAILS_SMTP_HOST must be defined"
+ENV RAILS_SMTP_HOST ""
 ENV RAILS_SMTP_USER ${APP_NAME}
-ENV RAILS_SMTP_PASS "RAILS_SMTP_PASS must be defined"
-ENV RAILS_DB_HOST "RAILS_DB_HOST must be defined"
+ENV RAILS_SMTP_PASS ""
+ENV RAILS_DB_HOST ""
 ENV RAILS_DB_NAME ${APP_NAME}
 ENV RAILS_DB_USER ${APP_NAME}
-ENV RAILS_DB_PASS "RAILS_DB_PASS must be defined"
+ENV RAILS_DB_PASS ""
 
 # Install nodejs in passenger-docker's way
 RUN mkdir /pd_build
@@ -44,6 +44,9 @@ RUN gem install bundler
 
 ADD upgrade-app.sh /usr/local/bin/upgrade-app.sh
 RUN chmod +x /usr/local/bin/upgrade-app.sh
+
+ADD dora-banner.sh /usr/local/bin/dora-banner.sh
+RUN chmod +x /usr/local/bin/dora-banner.sh
 
 RUN mkdir -p /etc/my_init.d
 ADD bootstrap-container.sh /etc/my_init.d/10_bootstrap_container.sh

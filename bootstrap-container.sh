@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 # This script serves to boostrap the container.
 # This script is run every time the container is started,
 # but we do not want to re-compile the assets over and
@@ -8,6 +9,9 @@
 # Discourse's launcher script for instance), but we prefer
 # to have all the tools that we need in the container
 # itself, without a need for an external control script.
+
+dora-banner.sh
+
 FLAG_FILE=/bootstrapped
 if [ -a $FLAG_FILE ]; then
   DATE=$(cat $FLAG_FILE)
@@ -17,7 +21,6 @@ fi
 
 echo "= Bootstrapping container... $(date --rfc-3339=seconds)"
 APP_DIR=/home/app/app
-echo "= Application directory:     $APP_DIR"
 set -x -e
 
 if [ "$GIT_PULL" != "false" ]; then
@@ -63,17 +66,18 @@ else
   chown -R app:app $APP_DIR
 fi
 
+setuser app bundle config set path vendor/bundle
 setuser app bundle config set deployment $BUNDLE_DEPLOY
 setuser app bundle config set with $PASSENGER_APP_ENV
 setuser app bundle config set without $BUNDLE_WITHOUT
 setuser app bundle install
 setuser app yarn install --check-files
-setuser app bundle exec rails db:migrate || setuser app bundle exec rails db:schema:load
+setuser app bundle exec rails db:migrate
 
 if [ "$RAILS_PRECOMPILE_ASSETS" == "true" ]; then
   setuser app bundle exec rails assets:precompile
 fi
 
 set +x
-echo "= Done bootstrapping!.       $(date --rfc-3339=seconds)"
+echo "= Done bootstrapping!        $(date --rfc-3339=seconds)"
 date --rfc-3339=seconds > $FLAG_FILE

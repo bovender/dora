@@ -261,38 +261,19 @@ To use `dora` for development and testing, you may want to
 set `$GIT_PULL` to `false` and mount your entire Rails application's
 directory onto `/home/app`.
 
-Example `docker-compose.yml` file:
+With `$GIT_PULL` set to `false`, it is assumed that the
+entire `/home/app/app` directory is a mounted Docker volume.
+The bootstrapping script will _not_ link directories to
+`/shared/...`. It _will_ however set Bundler's `path` config
+option to `vendor/bundle` (even though it does not set
+`deployment` mode), so that Gems are saved in the mounted
+volume. This speeds up rebuilding the container.
 
-```yaml
-version: "3.7"
-services:
-  db:
-    container_name: db
-    image: postgres:12
-    restart: always
-    volumes:
-      - ./tmp/docker/db:/var/lib/postgresql/data
-    environment:
-      - "POSTGRES_PASSWORD=app_dev"
-  app_dev:
-    container_name: app_dev
-    build:
-      context: ../dora
-    ports:
-      - "127.0.0.1:3000:80"
-    volumes:
-      - ./:/home/app/
-    environment:
-      APP_NAME: "app_dev"
-      GIT_PULL: "false"
-      PASSENGER_APP_ENV: "development"
-      RAILS_DB_HOST: "db"
-      RAILS_DB_NAME: "app_dev"
-      RAILS_DB_USER: "app_dev"
-      RAILS_DB_PASS: "app_dev"
-    depends_on:
-      - db
-```
+`dora` ships with a generic `docker-compose.yml` file that
+can be customized via environment variables. A `.env` file
+lends itself well to this configuration. The composition
+consists of the rails app, Postgres, and Redis. See `sample.env`
+for usage instructions.
 
 ## Troubleshooting
 

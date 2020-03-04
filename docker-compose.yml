@@ -1,0 +1,43 @@
+# This is a sample docker-compose.yml file that constructs
+# a Docker environment for Rails development.
+version: "3.7"
+services:
+  rails:
+    build:
+      context: .
+    ports:
+      - "127.0.0.1:3000:80"
+    volumes:
+      - ${DORA_HOST_APP_DIR}:/home/app/app/
+    environment:
+      # By omitting the values, the variables are taken
+      # from the current environment. This requires an
+      # existing `.env` file (or any other means of
+      # setting the variables).
+      - APP_NAME
+      - DORA_HOST_APP_DIR
+      - DORA_HOST_VOL_DIR
+      - GIT_PULL
+      - PASSENGER_APP_ENV
+      - RAILS_PRECOMPILE_ASSETS
+      - RAILS_DB_HOST
+      - RAILS_DB_NAME
+      - RAILS_DB_USER
+      - RAILS_DB_PASS
+    depends_on:
+      - db
+      - redis
+  db:
+    image: postgres:11
+    volumes:
+      - ${DORA_HOST_VOL_DIR}/db:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_PASSWORD=ggap_dev"
+  adminer:
+    image: adminer
+    ports:
+      - "127.0.0.1:3001:8080"
+    depends_on:
+      - db
+  redis:
+    image: redis
