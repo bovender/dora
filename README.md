@@ -41,7 +41,7 @@ Customization is done with environment variables.
 | `RAILS_SMTP_PORT` | SMTP port | 587
 | `RAILS_SMTP_USER` | SMTP user name | `$APP_NAME`
 | `RAILS_SMTP_PASS` | SMTP password |
-| `RAILS_SECRET_KEY` | Rails' secret key base |
+| `SECRET_KEY_BASE` | Rails' secret key base |
 
 ### YAML snippet for docker-compose
 
@@ -79,7 +79,7 @@ else.
       RAILS_SMTP_PORT: "{{ MY_APP.smtp.port }}"
       RAILS_SMTP_USER: "{{ MY_APP.smtp.user }}"
       RAILS_SMTP_PASS: "{{ MY_APP.smtp.pass }}"
-      RAILS_SECRET_KEY: "{{ MY_APP.secret_key }}"
+      SECRET_KEY_BASE: "{{ MY_APP.secret_key }}"
     depends_on:
       - db
 
@@ -141,7 +141,7 @@ Rails secret:
 
 ```yaml
 production:
-  secret_key_base: <%= ENV['RAILS_SECRET_KEY'] %>
+  secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
 ```
 
 Database:
