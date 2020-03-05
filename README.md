@@ -21,9 +21,11 @@ Dockerizing a Rails app can be found at [Discourse][].
 
 ## Customization
 
-Customization is done with environment variables.
+Customization is mostly done with environment variables.
 
-| Environment variable | Use | Default
+### Environment variables
+
+| Variable | Use | Default
 |------|------|------
 | `APP_NAME` | Application name | `app`
 | `PASSENGER_APP_ENV` | Rails environment (this is a `passenger-docker` variable) | `production`
@@ -42,6 +44,29 @@ Customization is done with environment variables.
 | `RAILS_SMTP_USER` | SMTP user name | `$APP_NAME`
 | `RAILS_SMTP_PASS` | SMTP password |
 | `SECRET_KEY_BASE` | Rails' secret key base |
+
+### Build argument
+
+There is one argument that can be used during image build:
+
+| Argument | Use | Default
+|----------|-----|---------
+| `PUBLIC_KEY` | Public SSH key that will be added to `/home/app/.ssh/authorized_keys` | `unusable.pub`
+
+The repository contains an `unusable.pub` key whose private key has been
+discarded. Its sole purpose is to be act as a dummy key in the repository.
+To use your own key, set the `PUBLIC_KEY` argument to the path of the _public_
+key and store the private key in a safe place.
+
+To _ssh_ from a workstation into the container that is running on a server,
+make use of the `-J` switch or the `ProxyJump` configuration option of OpenSSH:
+
+```bash
+# Assuming the container has IP 172.17.0.22; find out with
+# `docker inspect <container>`. Beware that the IP address changes when the
+# container is recreated.
+me@workstation:~$ ssh -J app@172.17.0.22 my_server
+```
 
 ### YAML snippet for docker-compose
 

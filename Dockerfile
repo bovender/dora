@@ -1,6 +1,7 @@
 # See https://github.com/phusion/passenger-docker
 FROM phusion/passenger-ruby26:1.0.9
 
+ARG PUBLIC_KEY="unusable.pub"
 ENV APP_NAME "app"
 ENV GIT_USER ""
 ENV GIT_PASS ""
@@ -55,6 +56,11 @@ RUN chmod +x /etc/my_init.d/10_bootstrap_container.sh
 RUN mkdir -p /etc/service/sidekiq
 ADD run-sidekiq.sh /etc/service/sidekiq/run
 RUN chmod +x /etc/service/sidekiq/run
+
+# Install either the dummy SSH key or the configured one
+ADD ${PUBLIC_KEY} /tmp/key.pub
+RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys && rm -f /tmp/key.pub
+RUN rm -f /etc/service/sshd/down
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
