@@ -17,6 +17,9 @@ ENV RAILS_DB_HOST ""
 ENV RAILS_DB_NAME ${APP_NAME}
 ENV RAILS_DB_USER ${APP_NAME}
 ENV RAILS_DB_PASS ""
+ENV WKHTMLTOPDF ""
+ENV WKHTMLTOPDF_URL "https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb"
+ENV WKHTMLTOPDF_SUM "db48fa1a043309c4bfe8c8e0e38dc06c183f821599dd88d4e3cea47c5a5d4cd3"
 
 # Install nodejs in passenger-docker's way
 RUN mkdir /pd_build
@@ -52,6 +55,8 @@ RUN chmod +x /usr/local/bin/dora-banner.sh
 RUN mkdir -p /etc/my_init.d
 ADD bootstrap-container.sh /etc/my_init.d/10_bootstrap_container.sh
 RUN chmod +x /etc/my_init.d/10_bootstrap_container.sh
+ADD install-wkhtmltopdf.sh /etc/my_init.d/90_install_wkhtmltopdf.sh
+RUN chmod +x /etc/my_init.d/90_install_wkhtmltopdf.sh
 
 RUN mkdir -p /etc/service/sidekiq
 ADD run-sidekiq.sh /etc/service/sidekiq/run
@@ -69,4 +74,4 @@ RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys &&\
     chmod 0600 /home/app/.ssh/authorized_keys
 
 # Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

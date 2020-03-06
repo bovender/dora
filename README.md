@@ -2,22 +2,20 @@
 
 ## *DO*cker container for *RA*ils
 
-This is a little project that helps me to set up and operate
-[Docker][] containers for [Ruby on Rails][] apps. It builds
-upon the [passenger-docker][] container by [Phusion][], the
-makers of the [Passenger][] app server.
+This is a little project that helps me to set up and operate [Docker][]
+containers for [Ruby on Rails][] apps. It builds upon the [passenger-docker][]
+container by [Phusion][], the makers of the [Passenger][] app server.
 
-The Dockerfile and the maintenance scripts are generic.
-Customization for specific apps happens through Docker build
-`ARGS` and environment variables.
+The Dockerfile and the maintenance scripts are generic. Customization for
+specific apps happens through Docker build `ARGS` and environment variables.
+There is built-in support to generate PDF files with [wkhtmltopdf][].
 
-> If you stumble upon this, be advised that this is amateur
-work. It may suit your needs, but it was mainly created to
-help me with my own projects. I would be more than happy though
-to take pull request to improve this.
+> If you stumble upon this, be advised that this is amateur work. It may suit
+your needs, but it was mainly created to help me with my own projects. I would
+be more than happy though to take pull request to improve this.
 
-An alternative and much more sophisticated approach to
-Dockerizing a Rails app can be found at [Discourse][].
+An alternative and much more sophisticated approach to Dockerizing a Rails app
+can be found at [Discourse][].
 
 ## Customization
 
@@ -44,6 +42,8 @@ Customization is mostly done with environment variables.
 | `RAILS_SMTP_USER` | SMTP user name | `$APP_NAME`
 | `RAILS_SMTP_PASS` | SMTP password |
 | `SECRET_KEY_BASE` | Rails' secret key base |
+| `NO_WKHTMLTOPDF` | Do not attempt to install [wkhtmltopdf][] | (empty)
+| `WKHTMLTOPDF_URL` | Download URL for [wkhtmltopdf][] | 
 
 ### Build argument
 
@@ -65,14 +65,12 @@ See below for more information about SSH'ing into the container.
 
 ### YAML snippet for docker-compose
 
-To use this with [docker-compose][], clone the repository,
-then add the following snippet to your `docker-compose.yml`
-file and customize it (e.g., replace `MY_APP` with something
-else).
+To use this with [docker-compose][], clone the repository, then add the
+following snippet to your `docker-compose.yml` file and customize it (e.g.,
+replace `MY_APP` with something else).
 
-The bracketed bits (`{{ ... }}`) are [Ansible][] variables.
-If you do not use Ansible, just replace them with something
-else.
+The bracketed bits (`{{ ... }}`) are [Ansible][] variables. If you do not use
+Ansible, just replace them with something else.
 
 ```yaml
   MY_APP:
@@ -114,9 +112,8 @@ else.
       - "POSTGRES_PASSWORD={{ postgres_master_password }}"
 ```
 
-Snippet for Ansible's `defaults/main.yml` file (I define all variables
-here, even those with a default value, to prevent surprises in the
-future):
+Snippet for Ansible's `defaults/main.yml` file (I define all variables here,
+even those with a default value, to prevent surprises in the future):
 
 ```yaml
 docker:
@@ -145,13 +142,11 @@ MY_APP:
     pass:
 ```
 
-Remember to use `ansible-vault encrypt_string` to hash all
-passwords!
+Remember to use `ansible-vault encrypt_string` to hash all passwords!
 
-> **WARNING:** Even then using `ansible-vault` to encrypt all
-secrets in your Ansible repository, be aware that they will
-appear unencrypted in the `docker-compose.yml` file that is
-deployed on the server!
+> **WARNING:** Even then using `ansible-vault` to encrypt all secrets in your
+Ansible repository, be aware that they will appear unencrypted in the
+`docker-compose.yml` file that is deployed on the server!
 
 Please ensure your secrets are safe.
 
@@ -199,10 +194,9 @@ end
 
 ### Reverse proxy
 
-I use [Apache2][] as a reverse proxy to relay requests from
-the Docker host to the container. This can of course also be
-done with [Nginx][] or any other web server that can act as
-a reverse proxy, but I have more experience with Apache.
+I use [Apache2][] as a reverse proxy to relay requests from the Docker host to
+the container. This can of course also be done with [Nginx][] or any other web
+server that can act as a reverse proxy, but I have more experience with Apache.
 
 NB: This is an [Ansible][] template with some Ansible variables
 in it.
@@ -247,30 +241,28 @@ in it.
 
 ## Sidekiq
 
-The Dockerfile installs a service into `/etc/services/sidekiq`
-that runs [Sidekiq][] in the app directory. The Sidekiq log is
-written to `/shared/log/sidekiq.log`.
+The Dockerfile installs a service into `/etc/services/sidekiq` that runs
+[Sidekiq][] in the app directory. The Sidekiq log is written to
+`/shared/log/sidekiq.log`.
 
-There is currently no sanity check, so make sure your `Gemfile`
-bundles Sidekiq.
+There is currently no sanity check, so make sure your `Gemfile` bundles
+Sidekiq.
 
 ## Upgrading the app
 
-To upgrade the app, call the `upgrade-app.sh` script that
-the `Dockerfile` places in `/usr/local/bin`. The script will
-pull the app from the [Git][] repository, migrate the database,
-precompile assets, and restart [Passenger][].
+To upgrade the app, call the `upgrade-app.sh` script that the `Dockerfile`
+places in `/usr/local/bin`. The script will pull the app from the [Git][]
+repository, migrate the database, precompile assets, and restart [Passenger][].
 
-There is no good contingency plan for when any of these steps
-fail. The `upgrade-app.sh` script provides only very limited
-support to roll back the application to a previous state.
-One tool that is definitively better at this is [Capistrano][].
+There is no good contingency plan for when any of these steps fail. The
+`upgrade-app.sh` script provides only very limited support to roll back the
+application to a previous state. One tool that is definitively better at this
+is [Capistrano][].
 
 ## Data persistence
 
-Data can be persisted with a Docker volume that is mounted
-onto `/shared`. The maintenance scripts link several directories
-into `/shared`:
+Data can be persisted with a Docker volume that is mounted onto `/shared`. The
+maintenance scripts link several directories into `/shared`:
 
 - `/home/app/app/vendor/bundle` (which contains the bundled Gems)
 - `/home/app/app/log` (Rails' log files)
@@ -310,74 +302,76 @@ Then you can simply log into your Rails container from your workstation:
 ssh my_rails_app
 ```
 
+## wkhtmltopdf support
+
+To facilitate generating PDF files, Dora has built-in support to install
+[wkhtmltopdf][]. When the container is started, Dora checks for the presence
+of the `wkhtmltopdf` command. If it is not found, the binary will be downloaded
+from Github and installed along with the required dependencies.
+
+Define the `$NO_WKKHTMLTOPDF` environment variable with any value to prevent
+Dora from installing [wkhtmltopdf][].
+
+You can customize the download by overriding `$WKHTMLTOPDF_URL`. Just do not
+forget to also place the SHA-256 checksum into `$WKHTMLTOPDF_SUM`.
 
 ## Development and testing
 
-To use `dora` for development and testing, you may want to
-set `$GIT_PULL` to `false` and mount your entire Rails application's
-directory onto `/home/app`.
+To use `dora` for development and testing, you may want to set `$GIT_PULL` to
+`false` and mount your entire Rails application's directory onto `/home/app`.
 
-With `$GIT_PULL` set to `false`, it is assumed that the
-entire `/home/app/app` directory is a mounted Docker volume.
-The bootstrapping script will _not_ link directories to
-`/shared/...`. It _will_ however set Bundler's `path` config
-option to `vendor/bundle` (even though it does not set
-`deployment` mode), so that Gems are saved in the mounted
-volume. This speeds up rebuilding the container.
+With `$GIT_PULL` set to `false`, it is assumed that the entire `/home/app/app`
+directory is a mounted Docker volume. The bootstrapping script will _not_ link
+directories to `/shared/...`. It _will_ however set Bundler's `path` config
+option to `vendor/bundle` (even though it does not set `deployment` mode), so
+that Gems are saved in the mounted volume. This speeds up rebuilding the
+container.
 
-`dora` ships with a generic `docker-compose.yml` file that
-can be customized via environment variables. A `.env` file
-lends itself well to this configuration. The composition
-consists of the rails app, Postgres, and Redis. See `sample.env`
-for usage instructions.
+`dora` ships with a generic `docker-compose.yml` file that can be customized
+via environment variables. A `.env` file lends itself well to this
+configuration. The composition consists of the rails app, Postgres, and Redis.
+See `sample.env` for usage instructions.
 
 ## Troubleshooting
 
 ### Sending mail
 
-If your mail server is secured by a firewall, make sure
-it accepts connections from the Docker network.
+If your mail server is secured by a firewall, make sure it accepts connections
+from the Docker network.
 
 ### Avoiding confusion
 
-One thing that I initially had quite a hard time wrapping my
-head around is the distinction between an image and a container.
-However, this distinction is quite important in practice:
+One thing that I initially had quite a hard time wrapping my head around is the
+distinction between an image and a container. However, this distinction is
+quite important in practice:
 
-When the container is being built, any and all external
-dependencies such as mounted volumes and of course the
-database server are _not available_. This seems trivial, but
-I struggled with it initially.
+When the container is being built, any and all external dependencies such as
+mounted volumes and of course the database server are _not available_. This
+seems trivial, but I struggled with it initially.
 
-The _container_ on the other hand has all these dependencies
-available, but it may need some initial bootstrapping when
-it is first started. [Discourse][] takes care of this with
-an external control script called `launcher`. I prefer to
-have my container as atomic as possible. Therefore I
-decided to place the bootstrapping commands in a script that
-is run whenever the container is started, but checks for the
-presence of a sentinel file to decide whether bootstrapping
-is needed or not. This avoids unnecessary and possibly time
-consuming tasks such as precompiling assets, migrating the
-database and so on.
+The _container_ on the other hand has all these dependencies available, but it
+may need some initial bootstrapping when it is first started. [Discourse][]
+takes care of this with an external control script called `launcher`. I prefer
+to have my container as atomic as possible. Therefore I decided to place the
+bootstrapping commands in a script that is run whenever the container is
+started, but checks for the presence of a sentinel file to decide whether
+bootstrapping is needed or not. This avoids unnecessary and possibly time
+consuming tasks such as precompiling assets, migrating the database and so on.
 
-A note on the **user name** and **application directory**:
-`passenger-docker` creates a user called `app`. `dora`
-installs the application into a directory in this user's
-home directory that is also called `app`. Thus, the directory
+A note on the **user name** and **application directory**: `passenger-docker`
+creates a user called `app`. `dora` installs the application into a directory
+in this user's home directory that is also called `app`. Thus, the directory
 where the Rails application is installed is:
 
 ```bash
 /home/app/app
 ```
 
-Initially I had intended to make the application directory
-configurable to avoid possible confusion with the `app`
-user, but it would have been overly complicated to
-adjust the Nginx server configuration to this custom
-directory, at least if an environment variable was involved.
-Therefore, the `app` directory is now hard-coded into
-`dora`.
+Initially I had intended to make the application directory configurable to
+avoid possible confusion with the `app` user, but it would have been overly
+complicated to adjust the Nginx server configuration to this custom directory,
+at least if an environment variable was involved. Therefore, the `app`
+directory is now hard-coded into `dora`.
 
 ## Further reading
 - [Discourse's Docker container][Discourse]
@@ -401,3 +395,4 @@ MIT license. See [`LICENSE`](LICENSE).
 [Phusion]: https://www.phusion.nl
 [Ruby on Rails]: https://rubyonrails.org
 [Sidekiq]: https://github.com/mperham/sidekiq
+[wkhtmltopdf]: https://wkhtmltopdf.org

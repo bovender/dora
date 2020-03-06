@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 
 # This script serves to boostrap the container.
-# This script is run every time the container is started,
-# but we do not want to re-compile the assets over and
-# over again and so on, so we use a flag file to determine
-# whether the container has already been bootstrapped or not.
-# Bootstrapping could be done by an external script (see
-# Discourse's launcher script for instance), but we prefer
-# to have all the tools that we need in the container
-# itself, without a need for an external control script.
+# This script is run every time the container is started, but we do not want to
+# re-compile the assets over and over again and so on, so we use a flag file to
+# determine whether the container has already been bootstrapped or not.
+# Bootstrapping could be done by an external script (see Discourse's launcher
+# script for instance), but we prefer to have all the tools that we need in the
+# container itself, without a need for an external control script.
 
-dora-banner.sh | tee | grep -iv pass > /etc/ssh/dora-banner
+dora-banner.sh
+dora-banner.sh | grep -v _PASS > /etc/ssh/dora-banner
 
 FLAG_FILE=/bootstrapped
 if [ -a $FLAG_FILE ]; then
