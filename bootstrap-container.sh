@@ -10,7 +10,7 @@
 # to have all the tools that we need in the container
 # itself, without a need for an external control script.
 
-dora-banner.sh | tee /etc/ssh/dora-banner
+dora-banner.sh | tee | grep -iv pass > /etc/ssh/dora-banner
 
 FLAG_FILE=/bootstrapped
 if [ -a $FLAG_FILE ]; then
