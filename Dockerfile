@@ -65,7 +65,7 @@ ADD ${PUBLIC_KEY} /tmp/key.pub
 RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys &&\
     rm -f /tmp/key.pub &&\
     chown app:app /home/app/.ssh/authorized_keys &&\
-    chomd 0700 /home/app/.ssh &&\
+    chmod 0700 /home/app/.ssh &&\
     chomd 0600 /home/app/.ssh/authorized_keys
 
 # Clean up APT when done.
