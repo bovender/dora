@@ -1,0 +1,13 @@
+#	sshd configuration by Dora
+# https://github.com/bovender/dora
+
+UseDNS no
+Protocol 2
+SyslogFacility AUTHPRIV
+#LogLevel INFO
+PermitRootLogin no
+PubkeyAuthentication yes
+AuthorizedKeysFile %h/.ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+Banner /etc/ssh/dora-banner

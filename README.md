@@ -54,19 +54,13 @@ There is one argument that can be used during image build:
 | `PUBLIC_KEY` | Public SSH key that will be added to `/home/app/.ssh/authorized_keys` | `unusable.pub`
 
 The repository contains an `unusable.pub` key whose private key has been
-discarded. Its sole purpose is to be act as a dummy key in the repository.
-To use your own key, set the `PUBLIC_KEY` argument to the path of the _public_
-key and store the private key in a safe place.
+discarded (promise! ;-) ). Its sole purpose is to be act as a dummy key in the
+repository. To use your own key, set the `PUBLIC_KEY` argument to the path of
+the _public_ key and store the private key in a safe place. NB: The public key
+must be in the Dora's directory because it must be sent to the Docker daemon
+along with the rest of the build context.
 
-To _ssh_ from a workstation into the container that is running on a server,
-make use of the `-J` switch or the `ProxyJump` configuration option of OpenSSH:
-
-```bash
-# Assuming the container has IP 172.17.0.22; find out with
-# `docker inspect <container>`. Beware that the IP address changes when the
-# container is recreated.
-me@workstation:~$ ssh -J app@172.17.0.22 my_server
-```
+See below for more information about SSH'ing into the container.
 
 ### YAML snippet for docker-compose
 
@@ -280,7 +274,34 @@ into `/shared`:
 - `/home/app/app/vendor/bundle` (which contains the bundled Gems)
 - `/home/app/app/log` (Rails' log files)
 
-## development and testing
+## SSH access
+
+Dora enables the SSH daemon be default.
+
+`passenger-docker` expects SSH logins by root. I have decided to restrict
+SSH access to the `app` user. Normally, the `app` user is not allowed to log
+into the container because `passenger-docker` (or `baseimage-docker` from which
+it is derived) locks the `app` user. If you attempt to log in with SSH, the
+following message is logged to `/var/log/auth.log`:
+
+```plain
+User not allowed app because account is locked
+```
+
+Dora configures `sshd` to not allow root logins and not allow password logins.
+
+To _ssh_ from a workstation into the container that is running on a server,
+make use of the `-J` switch or the `ProxyJump` configuration option of OpenSSH:
+
+```bash
+# Assuming the container has IP 172.17.0.22; find out with
+# `docker inspect <container>`. Beware that the IP address changes when the
+# container is recreated.
+me@workstation:~$ ssh -J app@172.17.0.22 my_server
+```
+
+
+## Development and testing
 
 To use `dora` for development and testing, you may want to
 set `$GIT_PULL` to `false` and mount your entire Rails application's

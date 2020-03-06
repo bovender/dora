@@ -10,12 +10,12 @@
 # to have all the tools that we need in the container
 # itself, without a need for an external control script.
 
-dora-banner.sh
+dora-banner.sh | tee /etc/ssh/dora-banner
 
 FLAG_FILE=/bootstrapped
 if [ -a $FLAG_FILE ]; then
   DATE=$(cat $FLAG_FILE)
-  echo "This container has already been bootstrapped on $DATE."
+  echo "This container has already been bootstrapped on $DATE." | tee -a /etc/ssh/dora-banner
   exit
 fi
 
@@ -79,5 +79,5 @@ if [ "$RAILS_PRECOMPILE_ASSETS" == "true" ]; then
 fi
 
 set +x
-echo "= Done bootstrapping!        $(date --rfc-3339=seconds)"
+echo "= Done bootstrapping!        $(date --rfc-3339=seconds)" | tee -a /etc/ssh/dora-banner
 date --rfc-3339=seconds > $FLAG_FILE

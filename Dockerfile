@@ -58,9 +58,15 @@ ADD run-sidekiq.sh /etc/service/sidekiq/run
 RUN chmod +x /etc/service/sidekiq/run
 
 # Install either the dummy SSH key or the configured one
-ADD ${PUBLIC_KEY} /tmp/key.pub
-RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys && rm -f /tmp/key.pub
-RUN rm -f /etc/service/sshd/down
+ADD sshd_config /etc/sshd/sshd_config
+RUN rm -f /etc/service/sshd/down &&\
+    passwd -u app
+ADD ${PUBLIC_KEY} /tmp/key.pub &&\
+RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys &&\
+    rm -f /tmp/key.pub &&\
+    chown app:app /home/app/.ssh/authorized_keys &&\
+    chomd 0700 /home/app/.ssh &&\
+    chomd 0600 /home/app/.ssh/authorized_keys
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
