@@ -292,13 +292,22 @@ User not allowed app because account is locked
 Dora configures `sshd` to not allow root logins and not allow password logins.
 
 To _ssh_ from a workstation into the container that is running on a server,
-make use of the `-J` switch or the `ProxyJump` configuration option of OpenSSH:
+make use of the `ProxyCommand` configuration option of OpenSSH:
 
 ```bash
-# Assuming the container has IP 172.17.0.22; find out with
-# `docker inspect <container>`. Beware that the IP address changes when the
-# container is recreated.
-me@workstation:~$ ssh -J app@172.17.0.22 my_server
+# ~/.ssh/config
+Host my_rails_app
+  HostName 172.22.0.22 # This is likely to change when the container is recreated
+  User app
+  IdentityFile ~/.ssh/docker # Private key, must exist on your _workstation_!
+  ProxyCommand ssh <your_server> -W %h:%p # -W enables STDIN/STDOUT redirection
+
+```
+
+Then you can simply log into your Rails container from your workstation:
+
+```bash
+ssh my_rails_app
 ```
 
 
