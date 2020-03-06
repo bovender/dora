@@ -61,7 +61,7 @@ RUN chmod +x /etc/service/sidekiq/run
 ADD sshd_config /etc/sshd/sshd_config
 RUN rm -f /etc/service/sshd/down &&\
     passwd -u app
-ADD ${PUBLIC_KEY} /tmp/key.pub &&\
+ADD ${PUBLIC_KEY} /tmp/key.pub
 RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys &&\
     rm -f /tmp/key.pub &&\
     chown app:app /home/app/.ssh/authorized_keys &&\
