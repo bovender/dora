@@ -53,12 +53,13 @@ There is one argument that can be used during image build:
 |----------|-----|---------
 | `PUBLIC_KEY` | Public SSH key that will be added to `/home/app/.ssh/authorized_keys` | `unusable.pub`
 
-The repository contains an `unusable.pub` key whose private key has been
+The repository contains an `unusable_pub` key whose private key has been
 discarded (promise! ;-) ). Its sole purpose is to be act as a dummy key in the
 repository. To use your own key, set the `PUBLIC_KEY` argument to the path of
 the _public_ key and store the private key in a safe place. NB: The public key
 must be in the Dora's directory because it must be sent to the Docker daemon
-along with the rest of the build context.
+along with the rest of the build context. Files ending with `.pub` are ignored
+in the repository.
 
 See below for more information about SSH'ing into the container.
 

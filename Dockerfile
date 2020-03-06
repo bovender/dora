@@ -1,7 +1,7 @@
 # See https://github.com/phusion/passenger-docker
 FROM phusion/passenger-ruby26:1.0.9
 
-ARG PUBLIC_KEY="unusable.pub"
+ARG PUBLIC_KEY="unusable_pub"
 ENV APP_NAME "app"
 ENV GIT_USER ""
 ENV GIT_PASS ""
@@ -62,7 +62,7 @@ ADD sshd_config /etc/ssh/sshd_config
 RUN rm -f /etc/service/sshd/down &&\
     passwd -u app
 ADD ${PUBLIC_KEY} /tmp/key.pub
-RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys &&\
+RUN cat /tmp/key_pub >> /home/app/.ssh/authorized_keys &&\
     rm -f /tmp/key.pub &&\
     chown app:app /home/app/.ssh/authorized_keys &&\
     chmod 0700 /home/app/.ssh &&\
