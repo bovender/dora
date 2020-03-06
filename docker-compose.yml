@@ -24,6 +24,7 @@ services:
       - RAILS_DB_NAME
       - RAILS_DB_USER
       - RAILS_DB_PASS
+      - TIMEZONE
     depends_on:
       - db
       - redis

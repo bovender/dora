@@ -29,6 +29,7 @@ echo "= RAILS_DB_PASS:             $RAILS_DB_PASS"
 echo "= RAILS_SMTP_HOST:           $RAILS_SMTP_HOST"
 echo "= RAILS_SMTP_USER:           $RAILS_SMTP_USER"
 echo "= RAILS_SMTP_PASS:           $RAILS_SMTP_PASS"
+echo "= TIMEZONE:                  $TIMEZONE"
 echo "= NO_WKHTMLTOPDF:            $NO_WKHTMLTOPDF"
 echo "= \`which wkhtmltopdf\`:       $(which wkhtmltopdf)"
 echo

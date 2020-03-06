@@ -42,6 +42,7 @@ Customization is mostly done with environment variables.
 | `RAILS_SMTP_USER` | SMTP user name | `$APP_NAME`
 | `RAILS_SMTP_PASS` | SMTP password |
 | `SECRET_KEY_BASE` | Rails' secret key base |
+| `TIMEZONE` | Time zone of the container | `UCT`
 | `NO_WKHTMLTOPDF` | Do not attempt to install [wkhtmltopdf][] | (empty)
 | `WKHTMLTOPDF_URL` | Download URL for [wkhtmltopdf][] | 
 
@@ -331,6 +332,19 @@ container.
 via environment variables. A `.env` file lends itself well to this
 configuration. The composition consists of the rails app, Postgres, and Redis.
 See `sample.env` for usage instructions.
+
+## Container time zone
+
+`passenger-docker` does not configure a time zone for the container. Dora does
+do it by installing the `tzdata` package and supporting a `$TIMEZONE` variable.
+This variable _must_ be set to a directory and file unter `/usr/share/zoneinfo`,
+e.g. `Europe/Berlin`.
+
+To see all possible values for `$TIMEZONE`, issue:
+
+```bash
+find /usr/share/zoneinfo -follow | sed -E 's_(/[^/]+){3}/__'
+```
 
 ## Troubleshooting
 
