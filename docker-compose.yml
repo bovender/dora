@@ -36,7 +36,7 @@ services:
     environment:
       - "POSTGRES_PASSWORD=ggap_dev"
   adminer:
-    image: adminer
+    image: adminer:4.7
     ports:
       - "127.0.0.1:3001:8080"
     depends_on:
