@@ -77,7 +77,8 @@ if [ "$RAILS_PRECOMPILE_ASSETS" == "true" ]; then
   setuser app bundle exec rails assets:precompile
 fi
 
-git describe > public/version
+set +e
+setuser app git describe > tmp/version
 
 set +x
 echo "= Done bootstrapping!        $(date --rfc-3339=seconds)" | tee -a /etc/ssh/dora-banner

@@ -1,5 +1,11 @@
 # dora changelog
 
+## Version 1.4.1 (2020-03-08)
+
+### Changed
+
+- Git repository is described to `tmp/version` rather than `public/version`.
+
 ## Version 1.3.0 (2020-03-08)
 
 ### New features
