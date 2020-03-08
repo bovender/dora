@@ -44,7 +44,8 @@ Customization is mostly done with environment variables.
 | `SECRET_KEY_BASE` | Rails' secret key base |
 | `TIMEZONE` | Time zone of the container | `UCT`
 | `NO_WKHTMLTOPDF` | Do not attempt to install [wkhtmltopdf][] | (empty)
-| `WKHTMLTOPDF_URL` | Download URL for [wkhtmltopdf][] | 
+| `WKHTMLTOPDF_URL` | Download URL for [wkhtmltopdf][] |
+| `WEBHOOK_SECRET` | Secret token that can we used for webhooks (not used by Dora) |
 
 ### Build argument
 

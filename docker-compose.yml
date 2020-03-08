@@ -25,6 +25,7 @@ services:
       - RAILS_DB_USER
       - RAILS_DB_PASS
       - TIMEZONE
+      - WEBHOOK_SECRET
     depends_on:
       - db
       - redis
