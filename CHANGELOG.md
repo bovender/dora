@@ -1,5 +1,16 @@
 # dora changelog
 
+## Version 1.3.0 (2020-03-08)
+
+### New features
+
+- Git repository is 'described' to `public/version`.
+- Add a `WEBHOOK_SECRET` environment variable.
+
+### Improved
+
+- Tag adminer at version ~> 4.7.
+
 ## Version 1.2.0 (2020-03-06)
 
 ### New feature
