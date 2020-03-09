@@ -354,6 +354,29 @@ find /usr/share/zoneinfo -follow | sed -E 's_(/[^/]+){3}/__'
 If your mail server is secured by a firewall, make sure it accepts connections
 from the Docker network.
 
+### Receiving mail
+
+To receive mail with your Rails app (and if not yet using [Action Mailbox][]),
+you can configure a [Postfix][] mail transport like so:
+
+```postfix
+# /etc/postfix/master.cf
+app           unix  -       n       n       -       -       pipe
+  flags=DRhu user=USER directory=/DIR/OF/DOCKER-COMPOSE-FILE argv=/usr/local/bin/docker-compose exec -T dora_rails_1 bash -c {(cd /home/app/app; bin/rails runner -e production bin/receive.rb ${extension})} 
+```
+
+The `receive.rb` file could look like this:
+
+```ruby
+require 'syslog/logger'
+log = Syslog::Logger.new __FILE__
+log.info "Entering #{__FILE__}"
+input = STDIN.read
+log.debug "E-Mail local extension: #{extension[0, 20]}"
+MyMailer.receive input
+log.info "Leaving #{__FILE__}"
+```
+
 ### Avoiding confusion
 
 One thing that I initially had quite a hard time wrapping my head around is the
@@ -397,6 +420,7 @@ directory is now hard-coded into `dora`.
 
 MIT license. See [`LICENSE`](LICENSE).
 
+[Action Mailbox]: https://guides.rubyonrails.org/action_mailbox_basics.html
 [Ansible]: https://www.ansible.com
 [Apache2]: https://httpd.apache.org
 [Capistrano]: https://www.capistranorb.com
@@ -408,6 +432,7 @@ MIT license. See [`LICENSE`](LICENSE).
 [passenger-docker]: https://github.com/phusion/passenger-docker
 [Passenger]: https://www.phusionpassenger.com
 [Phusion]: https://www.phusion.nl
+[Postfix]: https://postfix.org
 [Ruby on Rails]: https://rubyonrails.org
 [Sidekiq]: https://github.com/mperham/sidekiq
 [wkhtmltopdf]: https://wkhtmltopdf.org

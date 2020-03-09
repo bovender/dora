@@ -1,5 +1,12 @@
 # dora changelog
 
+## UNRELEASED
+
+### Fixed
+
+- Local Bundler configuration is now properly set.
+- Add suggestions to configure Postfix to let the Rails app receive mail.
+
 ## Version 1.4.1 (2020-03-08)
 
 ### Changed
