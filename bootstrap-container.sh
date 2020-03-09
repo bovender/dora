@@ -31,15 +31,13 @@ cd $APP_DIR
 
 case $PASSENGER_APP_ENV in
   production)
+    BUNDLE_WITH="production"
     BUNDLE_WITHOUT="test:development"
     BUNDLE_DEPLOY="true"
     ;;
-  development)
-    BUNDLE_WITHOUT="test:production"
-    BUNDLE_DEPLOY="false"
-    ;;
-  test)
-    BUNDLE_WITHOUT="production:development"
+  development|test)
+    BUNDLE_WITH="development:test"
+    BUNDLE_WITHOUT="production"
     BUNDLE_DEPLOY="false"
     ;;
 esac
@@ -65,10 +63,11 @@ else
   chown -R app:app $APP_DIR
 fi
 
-setuser app bundle config set path vendor/bundle
-setuser app bundle config set deployment $BUNDLE_DEPLOY
-setuser app bundle config set with $PASSENGER_APP_ENV
-setuser app bundle config set without $BUNDLE_WITHOUT
+setuser app bundle config --local path vendor/bundle
+setuser app bundle config --local deployment $BUNDLE_DEPLOY
+setuser app bundle config --delete without
+setuser app bundle config --local with $BUNDLE_WITH
+setuser app bundle config --local without $BUNDLE_WITHOUT
 setuser app bundle install
 setuser app yarn install --check-files
 setuser app bundle exec rails db:migrate
