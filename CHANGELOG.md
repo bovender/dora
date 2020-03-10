@@ -2,6 +2,11 @@
 
 ## UNRELEASED
 
+### New feature
+
+- `$PATH` is prepended with `/home/app/app/bin` by `bootstrap-container.sh` in
+  order to make Rails scripts easily accessible.
+
 ### Fixed
 
 - Local Bundler configuration is now properly set.

@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
 
 # This script serves to boostrap the container.
+
+# Make rails commands easily accessible from the command line.
+# The modified PATH will be picked up by passenger-docker's my_init system.
+# See: https://github.com/phusion/baseimage-docker#environment_variables
+echo -e "/home/app/app/bin:$PATH" > /etc/container_environment/PATH
+
+dora-banner.sh
+dora-banner.sh | grep -v _PASS > /etc/ssh/dora-banner
+
 # This script is run every time the container is started, but we do not want to
 # re-compile the assets over and over again and so on, so we use a flag file to
 # determine whether the container has already been bootstrapped or not.
 # Bootstrapping could be done by an external script (see Discourse's launcher
 # script for instance), but we prefer to have all the tools that we need in the
 # container itself, without a need for an external control script.
-
-dora-banner.sh
-dora-banner.sh | grep -v _PASS > /etc/ssh/dora-banner
-
 FLAG_FILE=/bootstrapped
 if [ -a $FLAG_FILE ]; then
   DATE=$(cat $FLAG_FILE)

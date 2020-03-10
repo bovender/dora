@@ -32,6 +32,7 @@ echo "= RAILS_SMTP_PASS:           $RAILS_SMTP_PASS"
 echo "= TIMEZONE:                  $TIMEZONE"
 echo "= NO_WKHTMLTOPDF:            $NO_WKHTMLTOPDF"
 echo "= \`which wkhtmltopdf\`:       $(which wkhtmltopdf)"
+echo "= PATH:                      $PATH"
 echo
 echo "======================================="
 echo "=== https://github.com/bovender/dora =="
