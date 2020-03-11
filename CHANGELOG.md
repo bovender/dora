@@ -1,11 +1,12 @@
 # dora changelog
 
-## UNRELEASED
+## Version 1.5.0 (2020-03-11)
 
 ### New feature
 
 - `$PATH` is prepended with `/home/app/app/bin` by `bootstrap-container.sh` in
   order to make Rails scripts easily accessible.
+- The image now comes with ImageMagick installed.
 
 ### Fixed
 

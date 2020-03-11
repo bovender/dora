@@ -43,3 +43,9 @@ services:
       - db
   redis:
     image: redis
+  selenium:
+    image: selenium/standalone-firefox:3.141.59-zirconium
+    environment:
+      START_XVFB: "false"
+    volumes:
+      - /dev/shm:/dev/shm

@@ -29,11 +29,11 @@ ADD nodejs.sh /pd_build
 ADD buildconfig /pd_build
 RUN /pd_build/nodejs.sh
 
-# Install yarn
+# Install yarn and other packages
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list &&\
     apt-get update &&\
-    apt-get install -y --no-install-recommends yarn tzdata
+    apt-get install -y --no-install-recommends imagemagick tzdata yarn
 
 # This is from passenger-docker's README.
 ENV HOME /root
