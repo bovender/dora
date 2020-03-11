@@ -28,7 +28,7 @@ APP_DIR=/home/app/app
 set -x -e
 
 if [ "$GIT_PULL" != "false" ]; then
-  git clone --depth 1 -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||
+  git clone -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||
   	(echo "= Directory `$APP_DIR` exists already, attempting to pull..."; git -C "$APP_DIR" pull)
 fi
 
