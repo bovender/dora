@@ -1,5 +1,11 @@
 # dora changelog
 
+## Version 1.5.1 (2020-03-11)1
+
+### Fixed
+
+- Set Sidekiq environment to `$PASSENGER_APP_ENV`.
+
 ## Version 1.5.0 (2020-03-11)
 
 ### New feature
