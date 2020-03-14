@@ -1,6 +1,17 @@
 # dora changelog
 
-## Version 1.5.1 (2020-03-11)1
+## Version 1.5.2 (2020-03-14)
+
+### Improved
+
+- Expanded [README.md](README.md) with more instructions to configure the
+  Rails application.
+
+### Fixed
+
+- Always git-describe repository, even if there are no tags.
+
+## Version 1.5.1 (2020-03-11)
 
 ### Fixed
 

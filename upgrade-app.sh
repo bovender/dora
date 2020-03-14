@@ -15,7 +15,7 @@ function upgrade {
   yarn install --check-files &&\
   bundle exec rails db:migrate &&\
   bundle exec rails assets:precompile &&\
-  git describe > tmp/version &&\
+  git describe --always > tmp/version &&\
   passenger-config restart-app $APP_DIR
 }
 

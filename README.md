@@ -377,6 +377,73 @@ MyMailer.receive input
 log.info "Leaving #{__FILE__}"
 ```
 
+### Database configuration
+
+```yaml
+# config/database.yml
+default: &default
+  adapter: postgresql
+  host: <%= ENV['RAILS_DB_HOST'] %>
+  database: <%= ENV['RAILS_DB_NAME'] %>
+  username: <%= ENV['RAILS_DB_USER'] %>
+  password: <%= ENV['RAILS_DB_PASS'] %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+  # Facilitate running tests in the development container
+  database: <%= ENV['RAILS_DB_NAME'] %>_test
+
+production:
+  <<: *default
+
+staging:
+  <<: *default
+```
+
+### SMTP configuration
+
+```ruby
+# config/environments/production.rb
+Rails.application.configure do
+  # ...
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: ENV['RAILS_SMTP_HOST'],
+    port: ENV['RAILS_SMTP_PORT'],
+    user_name: ENV['RAILS_SMTP_USER'],
+    password: ENV['RAILS_SMTP_PASS']
+  # ...
+end
+```
+
+### Required gems
+
+```ruby
+# Gemfile
+gem 'sidekiq', '~> 5.2'
+```
+
+### Sidekiq configuration
+
+```ruby
+# frozen_string_literal: true
+
+# config/initializers/sidekiq.rb
+REDIS_HOST = 'redis://redis:6379/1' # may need to change Redis' db number
+
+Sidekiq.configure_server do |config|
+  config.redis = { url: REDIS_HOST }
+end
+
+Sidekiq.configure_client do |config|
+  config.redis = { url: REDIS_HOST }
+end
+```
+
+
 ### Avoiding confusion
 
 One thing that I initially had quite a hard time wrapping my head around is the

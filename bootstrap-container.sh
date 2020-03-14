@@ -82,7 +82,8 @@ if [ "$RAILS_PRECOMPILE_ASSETS" == "true" ]; then
 fi
 
 set +e
-setuser app git describe > tmp/version
+setuser app git describe --always > tmp/version
+chown app:app tmp/version
 
 set +x
 echo "= Done bootstrapping!        $(date --rfc-3339=seconds)" | tee -a /etc/ssh/dora-banner
