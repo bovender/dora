@@ -1,5 +1,9 @@
 # dora changelog
 
+### New
+
+- Added logrotate configuration for `/shared/log/*.log`.
+
 ## Version 1.5.2 (2020-03-14)
 
 ### Improved

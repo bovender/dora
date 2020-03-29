@@ -347,6 +347,11 @@ To see all possible values for `$TIMEZONE`, issue:
 find /usr/share/zoneinfo -follow | sed -E 's_(/[^/]+){3}/__'
 ```
 
+## Logrotate
+
+Log files in `/shared/log` will be logrotated on a daily basis for 14 days
+before they are discarded.
+
 ## Troubleshooting
 
 ### Sending mail
