@@ -349,6 +349,16 @@ via environment variables. A `.env` file lends itself well to this
 configuration. The composition consists of the rails app, Postgres, and Redis.
 See `sample.env` for usage instructions.
 
+### MailHog
+
+`dora`'s Docker composition includes [MailHog][] to facilitate interacting with
+e-mails on a development or staging machine. The web UI is exposed on the local
+host's port 8025. MailHog is configured to store mails in `maildir` format,
+which is a Docker volume on `${DORA_HOST_VOL_DIR}/mailhog`.
+
+You can declare MailHog's [configuration variables][MailHog config] in your `.env`
+file to adjust MailHog to your needs.
+
 ## Container time zone
 
 `passenger-docker` does not configure a time zone for the container. Dora does
@@ -521,6 +531,8 @@ MIT license. See [`LICENSE`](LICENSE).
 [Docker]: https://www.docker.com
 [docker-compose]: https://www.docker.com
 [Git]: https://www.git-scm.com
+[MailHog]: https://github.com/mailhog/MailHog
+[MailHog config]: https://github.com/mailhog/MailHog/blob/master/docs/CONFIG.md
 [Nginx]: https://www.nginx.com
 [passenger-docker]: https://github.com/phusion/passenger-docker
 [Passenger]: https://www.phusionpassenger.com

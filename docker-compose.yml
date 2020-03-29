@@ -34,7 +34,7 @@ services:
     volumes:
       - ${DORA_HOST_VOL_DIR}/db:/var/lib/postgresql/data
     environment:
-      - "POSTGRES_PASSWORD=ggap_dev"
+      POSTGRES_PASSWORD: postgres
   adminer:
     image: adminer:4.7
     ports:
@@ -49,3 +49,15 @@ services:
       START_XVFB: "false"
     volumes:
       - /dev/shm:/dev/shm
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    ports:
+      # Expost the UI's port on the host, but do not expose it to the world.
+      # MailHog's SMTP port 1025 is not listed here because it needs to be
+      # available on the Docker network only.
+      - "127.0.0.1:8025:8025"
+    environment:
+      MH_STORAGE: maildir
+      MH_MAILDIR_PATH: /home/mailhog/maildir
+    volumes:
+      - ${DORA_HOST_VOL_DIR}/mailhog:/home/mailhog/maildir

@@ -1,7 +1,10 @@
 # dora changelog
 
+## Version 1.6.0 (2020-03-29)
+
 ### New
 
+- Add [MailHog](https://github.com/mailhog/MailHog) to `docker-compose`.
 - Added logrotate configuration for `/shared/log/*.log`.
 
 ## Version 1.5.2 (2020-03-14)
