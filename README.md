@@ -17,6 +17,21 @@ be more than happy though to take pull request to improve this.
 An alternative and much more sophisticated approach to Dockerizing a Rails app
 can be found at [Discourse][].
 
+## Outline
+
+- [Customization](#customization)
+- [Sidekiq](#sidekiq)
+- [Upgrading the app](#upgrading-the-app)
+- [Data persistence](#data-persistence)
+- [SSH access](#ssh-access)
+- [wkhtmltopdf support](#wkhtmltopdf-support)
+- [Development and testing](#development-and-testing)
+- [Container time zone](#container-time-zone)
+- [Logrotate](#logrotate)
+- [Troubleshooting](#troubleshooting)
+- [Further reading](#further-reading)
+- [License](#license)
+
 ## Customization
 
 Customization is mostly done with environment variables.
@@ -367,8 +382,14 @@ you can configure a [Postfix][] mail transport like so:
 ```postfix
 # /etc/postfix/master.cf
 app           unix  -       n       n       -       -       pipe
-  flags=DRhu user=USER directory=/DIR/OF/DOCKER-COMPOSE-FILE argv=/usr/local/bin/docker-compose exec -T dora_rails_1 bash -c {(cd /home/app/app; bin/rails runner -e production bin/receive.rb ${extension})} 
+  flags=DRhu user=USER:docker directory=/DIR/OF/DOCKER-COMPOSE-FILE argv=/usr/local/bin/docker-compose exec -T dora_rails_1 bash -c {(cd /home/app/app; bin/rails runner -e production bin/receive.rb ${extension})}
 ```
+
+Replace `USER` with the user that owns the compose file. NB: It is imperative
+to include the group `docker` in `user=USER:docker`, because otherwise
+`docker-compose` will complain that it cannot connect to the Docker daemon,
+even if `USER` is normally a member of the group `docker`. The group must be
+stated explicitly (as I learned by trial and error).
 
 The `receive.rb` file could look like this:
 
