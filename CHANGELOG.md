@@ -1,5 +1,12 @@
 # dora changelog
 
+## Version 1.6.1 (2020-03-31)
+
+### Fixed
+
+- Explicitly mention SMTP-related environment variables in `docker-compose.yml`
+  so they are properly picked up from the current environment.
+
 ## Version 1.6.0 (2020-03-29)
 
 ### New
