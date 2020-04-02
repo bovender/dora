@@ -1,5 +1,9 @@
 # dora changelog
 
+### New
+
+- Added `restart-app.sh` helper script.
+
 ## Version 1.6.1 (2020-03-31)
 
 ### Fixed

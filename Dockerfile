@@ -52,6 +52,9 @@ RUN gem install bundler
 ADD upgrade-app.sh /usr/local/bin/upgrade-app.sh
 RUN chmod +x /usr/local/bin/upgrade-app.sh
 
+ADD upgrade-app.sh /usr/local/bin/restart-app.sh
+RUN chmod +x /usr/local/bin/restart-app.sh
+
 ADD dora-banner.sh /usr/local/bin/dora-banner.sh
 RUN chmod +x /usr/local/bin/dora-banner.sh
 
