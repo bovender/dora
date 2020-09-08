@@ -1,11 +1,11 @@
 # Logrotate configuration for mail log
 # Managed by Dora: https://github.com/bovender/dora
-/shared/log/*.log
-{
+/shared/log/*.log {
   rotate 14
   daily
   missingok
   notifempty
   compress
   delaycompress
+  copytruncate
 }

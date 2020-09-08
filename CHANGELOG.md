@@ -5,6 +5,10 @@
 - Added `restart-app.sh` helper script.
 - Added `rails-console.sh` helper script.
 
+# Fixed
+
+- Logrotate now uses the `copytruncate` option.
+
 ## Version 1.6.1 (2020-03-31)
 
 ### Fixed

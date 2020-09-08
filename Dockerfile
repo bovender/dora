@@ -74,6 +74,7 @@ ADD run-sidekiq.sh /etc/service/sidekiq/run
 RUN chmod +x /etc/service/sidekiq/run
 
 ADD logrotate-logs /etc/logrotate.d/app
+RUN chmod 0644 /etc/logrotate.d/app
 
 # Install either the dummy SSH key or the configured one
 ADD sshd_config /etc/ssh/sshd_config
