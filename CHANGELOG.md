@@ -1,5 +1,13 @@
 # dora changelog
 
+## Version 2.0.1 (2020-09-13)
+
+### Fixed
+
+- Revert setting `$HOME` to `/home/app/rails` as this caused the directory not
+  to be empty any more after installing Bundler, which in turn caused `git clone`
+  to fail.
+
 ## Version 2.0.0 (2020-09-13)
 
 ### Breaking change

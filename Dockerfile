@@ -35,8 +35,8 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends imagemagick tzdata yarn
 
-ENV HOME /home/app/rails
-WORKDIR $HOME
+ENV HOME /root
+WORKDIR /home/app
 
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
@@ -89,3 +89,5 @@ RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys &&\
 
 # Clean up APT when done.
 # RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+WORKDIR /home/app/rails
