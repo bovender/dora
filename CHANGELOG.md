@@ -1,5 +1,18 @@
 # dora changelog
 
+### Breaking change
+
+- The directory structure was changed because `/home/app/app` was too confusing
+  in practice, especially considering that a Rails app has an `app` folder
+  itself, which results in a path `/home/app/app/app`. That was a bit too
+  much. The main user `app` is "inherited" from Phusion's
+  [passenger-docker](https://github.com/phusion/passenger-docker) image and
+  cannot be changed; but the directory that the repository is cloned into was
+  renamed from `app` to `rails`.
+  **Important:** If you relay e-mails into your dora container as described in
+  README.md, you may need to adjust the paths in your mail server configuration
+  files, e.g. `master.cf` if you use Postfix.
+
 ### New
 
 - Added `restart-app.sh` helper script.

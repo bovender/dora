@@ -281,8 +281,8 @@ is [Capistrano][].
 Data can be persisted with a Docker volume that is mounted onto `/shared`. The
 maintenance scripts link several directories into `/shared`:
 
-- `/home/app/app/vendor/bundle` (which contains the bundled Gems)
-- `/home/app/app/log` (Rails' log files)
+- `/home/app/rails/vendor/bundle` (which contains the bundled Gems)
+- `/home/app/rails/log` (Rails' log files)
 
 ## SSH access
 
@@ -337,7 +337,7 @@ forget to also place the SHA-256 checksum into `$WKHTMLTOPDF_SUM`.
 To use `dora` for development and testing, you may want to set `$GIT_PULL` to
 `false` and mount your entire Rails application's directory onto `/home/app`.
 
-With `$GIT_PULL` set to `false`, it is assumed that the entire `/home/app/app`
+With `$GIT_PULL` set to `false`, it is assumed that the entire `/home/app/rails`
 directory is a mounted Docker volume. The bootstrapping script will _not_ link
 directories to `/shared/...`. It _will_ however set Bundler's `path` config
 option to `vendor/bundle` (even though it does not set `deployment` mode), so
@@ -392,7 +392,7 @@ you can configure a [Postfix][] mail transport like so:
 ```postfix
 # /etc/postfix/master.cf
 app           unix  -       n       n       -       -       pipe
-  flags=DRhu user=USER:docker directory=/DIR/OF/DOCKER-COMPOSE-FILE argv=/usr/local/bin/docker-compose exec -T dora_rails_1 bash -c {(cd /home/app/app; bin/rails runner -e production bin/receive.rb ${extension})}
+  flags=DRhu user=USER:docker directory=/DIR/OF/DOCKER-COMPOSE-FILE argv=/usr/local/bin/docker-compose exec -T dora_rails_1 bash -c {(cd /home/app/rails; bin/rails runner -e production bin/receive.rb ${extension})}
 ```
 
 Replace `USER` with the user that owns the compose file. NB: It is imperative
@@ -500,19 +500,21 @@ bootstrapping is needed or not. This avoids unnecessary and possibly time
 consuming tasks such as precompiling assets, migrating the database and so on.
 
 A note on the **user name** and **application directory**: `passenger-docker`
-creates a user called `app`. `dora` installs the application into a directory
-in this user's home directory that is also called `app`. Thus, the directory
-where the Rails application is installed is:
+creates a user called `app`; this is hard-coded into the `passenger-docker`
+image and cannot be changed without patching the upstream repository.
+Starting with version 2.0.0, `dora` installs the application into a directory
+in this user's home directory that is called `rails`; previously, this directory
+was also named `app`, resulting in confusing path names such as
+`/home/app/app/app`. Now, the directory where the Rails application is installed is:
 
 ```bash
-/home/app/app
+/home/app/rails
 ```
 
-Initially I had intended to make the application directory configurable to
-avoid possible confusion with the `app` user, but it would have been overly
-complicated to adjust the Nginx server configuration to this custom directory,
-at least if an environment variable was involved. Therefore, the `app`
-directory is now hard-coded into `dora`.
+Initially I had intended to make the application directory configurable, but it
+would have been overly complicated to adjust the Nginx server configuration to
+this custom directory, at least if an environment variable was involved.
+Therefore, the `rails` directory is now hard-coded into `dora`.
 
 ## Further reading
 - [Discourse's Docker container][Discourse]

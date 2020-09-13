@@ -2,7 +2,7 @@
 FROM phusion/passenger-ruby26:1.0.9
 
 ARG PUBLIC_KEY="unusable_pub"
-ENV APP_NAME "app"
+ENV APP_NAME "rails"
 ENV GIT_USER ""
 ENV GIT_PASS ""
 ENV GIT_REPO ""
@@ -35,8 +35,8 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends imagemagick tzdata yarn
 
-# This is from passenger-docker's README.
-ENV HOME /root
+ENV HOME /home/app/rails
+WORKDIR $HOME
 
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
@@ -44,8 +44,8 @@ CMD ["/sbin/my_init"]
 # Enable Nginx and Passenger
 RUN rm -f /etc/service/nginx/down
 RUN rm /etc/nginx/sites-enabled/default
-ADD app.conf /etc/nginx/sites-enabled/app.conf
-ADD app-env.conf /etc/nginx/main.d/app-env.conf
+ADD rails.conf /etc/nginx/sites-enabled/rails.conf
+ADD rails-env.conf /etc/nginx/main.d/rails-env.conf
 
 RUN gem install bundler
 
@@ -73,8 +73,8 @@ RUN mkdir -p /etc/service/sidekiq
 ADD run-sidekiq.sh /etc/service/sidekiq/run
 RUN chmod +x /etc/service/sidekiq/run
 
-ADD logrotate-logs /etc/logrotate.d/app
-RUN chmod 0644 /etc/logrotate.d/app
+ADD logrotate-logs /etc/logrotate.d/logs
+RUN chmod 0644 /etc/logrotate.d/logs
 
 # Install either the dummy SSH key or the configured one
 ADD sshd_config /etc/ssh/sshd_config

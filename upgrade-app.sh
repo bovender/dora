@@ -28,7 +28,7 @@ function rollback {
 }
 
 set -x
-APP_DIR=/home/app/app
+APP_DIR=/home/app/rails
 cd $APP_DIR
 PREVIOUS_VERSION=$(git describe 2>/dev/null || git rev-parse HEAD)
 pull && (upgrade || rollback)

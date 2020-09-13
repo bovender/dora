@@ -5,7 +5,7 @@
 # Make rails commands easily accessible from the command line.
 # The modified PATH will be picked up by passenger-docker's my_init system.
 # See: https://github.com/phusion/baseimage-docker#environment_variables
-echo -e "/home/app/app/bin:$PATH" > /etc/container_environment/PATH
+echo -e "/home/app/rails/bin:$PATH" > /etc/container_environment/PATH
 
 dora-banner.sh
 dora-banner.sh | grep -v _PASS > /etc/ssh/dora-banner
@@ -24,7 +24,7 @@ if [ -a $FLAG_FILE ]; then
 fi
 
 echo "= Bootstrapping container... $(date --rfc-3339=seconds)"
-APP_DIR=/home/app/app
+APP_DIR=/home/app/rails
 set -x -e
 
 if [ "$GIT_PULL" != "false" ]; then
