@@ -1,5 +1,7 @@
 # dora changelog
 
+## Version 2.0.0 (2020-09-13)
+
 ### Breaking change
 
 - The directory structure was changed because `/home/app/app` was too confusing
