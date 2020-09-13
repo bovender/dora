@@ -13,12 +13,17 @@
   README.md, you may need to adjust the paths in your mail server configuration
   files, e.g. `master.cf` if you use Postfix.
 
+### Changed
+
+- `passenger-docker` has been updated from 1.0.9 to 1.0.11 which implies an
+  upgrade of the default Ruby to 2.7.1 and and upgrade of Passenger to 6.0.6.
+
 ### New
 
 - Added `restart-app.sh` helper script.
 - Added `rails-console.sh` helper script.
 
-# Fixed
+### Fixed
 
 - Logrotate now uses the `copytruncate` option.
 
