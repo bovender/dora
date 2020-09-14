@@ -2,11 +2,6 @@
 
 # This script serves to boostrap the container.
 
-# Make rails commands easily accessible from the command line.
-# The modified PATH will be picked up by passenger-docker's my_init system.
-# See: https://github.com/phusion/baseimage-docker#environment_variables
-echo -e "/home/app/rails/bin:$PATH" > /etc/container_environment/PATH
-
 dora-banner.sh
 dora-banner.sh | grep -v _PASS > /etc/ssh/dora-banner
 
@@ -26,6 +21,14 @@ fi
 echo "= Bootstrapping container... $(date --rfc-3339=seconds)"
 APP_DIR=/home/app/rails
 set -x -e
+
+# Make rails commands easily accessible from the command line.
+# The modified PATH will be picked up by passenger-docker's my_init system.
+# See: https://github.com/phusion/baseimage-docker#environment_variables
+# echo -e "/home/app/rails/bin:$PATH" > /etc/container_environment/PATH
+# Since the above did not work, we modify /etc/environment directly
+sed -i 's_^PATH=.\+$_PATH="'$APP_DIR'/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin"_' /etc/environment
+
 
 if [ "$GIT_PULL" != "false" ]; then
   git clone -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||

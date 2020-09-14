@@ -4,6 +4,7 @@
 
 - Use `passenger-ruby27` rather than `passenger-ruby26` as base image.
 - Copy the right `rails-console.sh` helper script into the image.
+- Fix setting the `PATH` variable to include the path to the `bin` directory.
 
 ## Version 2.0.1 (2020-09-13)
 
