@@ -1,5 +1,9 @@
 # dora changelog
 
+### Fixed
+
+- Use `passenger-ruby27` rather than `passenger-ruby26` as base image.
+
 ## Version 2.0.1 (2020-09-13)
 
 ### Fixed
