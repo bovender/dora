@@ -55,7 +55,7 @@ RUN chmod +x /usr/local/bin/upgrade-app.sh
 ADD upgrade-app.sh /usr/local/bin/restart-app.sh
 RUN chmod +x /usr/local/bin/restart-app.sh
 
-ADD upgrade-app.sh /usr/local/bin/rails-console.sh
+ADD rails-console.sh /usr/local/bin/rails-console.sh
 RUN chmod +x /usr/local/bin/rails-console.sh
 
 ADD dora-banner.sh /usr/local/bin/dora-banner.sh
