@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# install-wkhtmltopdf.sh
+# This script is part of dora -- Docker container for Rails
+# https://github.com/bovender/dora
+
+echo "# dora wkhtmltopdf installation script"
+
 DEST_FILE=/tmp/wkhtmltopdf.deb
 
 if [ $(id -u) -ne 0 ]; then

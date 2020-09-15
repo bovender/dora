@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-# This script serves to boostrap the container.
+# bootstrap-container.sh
+# This script is part of dora -- Docker container for Rails
+# https://github.com/bovender/dora
 
 dora-banner.sh
 dora-banner.sh | grep -v _PASS > /etc/ssh/dora-banner
@@ -18,7 +20,7 @@ if [ -a $FLAG_FILE ]; then
   exit
 fi
 
-echo "= Bootstrapping container... $(date --rfc-3339=seconds)"
+echo "# Bootstrapping container... $(date --rfc-3339=seconds)"
 APP_DIR=/home/app/rails
 set -x -e
 
@@ -32,7 +34,7 @@ sed -i 's_^PATH=.\+$_PATH="'$APP_DIR'/bin:/usr/local/sbin:/usr/local/bin:/usr/sb
 
 if [ "$GIT_PULL" != "false" ]; then
   git clone -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||
-  	(echo "= Directory `$APP_DIR` exists already, attempting to pull..."; git -C "$APP_DIR" pull)
+  	(echo "# Directory `$APP_DIR` exists already, attempting to pull..."; git -C "$APP_DIR" pull)
 fi
 
 cd $APP_DIR
@@ -55,7 +57,7 @@ esac
 # which case we do not need to link reusable directories to
 # the outside world.
 if [ "$GIT_PULL" == "false" ]; then
-  set +x; echo "= Not pulling repository; not linking directories!"; set -x
+  set +x; echo "# Not pulling repository; not linking directories!"; set -x
 else
   # NB: When invoked with the `-p` flag, mkdir will not
   # raise an error if the directory exists already.
@@ -89,5 +91,5 @@ setuser app git describe --always > tmp/version
 chown app:app tmp/version
 
 set +x
-echo "= Done bootstrapping!        $(date --rfc-3339=seconds)" | tee -a /etc/ssh/dora-banner
+echo "# Done bootstrapping!        $(date --rfc-3339=seconds)" | tee -a /etc/ssh/dora-banner
 date --rfc-3339=seconds > $FLAG_FILE

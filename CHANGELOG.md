@@ -15,6 +15,10 @@
 - The `rails` command in the `rails-console.sh` helper script was missing the
   actual command.
 
+### Changed
+
+- Various rather cosmetic improvements to script output.
+
 ## Version 2.0.1 (2020-09-13)
 
 ### Fixed
