@@ -14,6 +14,8 @@
 - Fix setting the `PATH` variable to include the path to the `bin` directory.
 - The `rails` command in the `rails-console.sh` helper script was missing the
   actual command.
+- The nodejs installation script now respects the container's operating
+  system's code name.
 
 ### Changed
 
