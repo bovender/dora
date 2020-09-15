@@ -1,5 +1,12 @@
 # dora changelog
 
+### Improved
+
+- Added a simple locking mechanism to the `upgrade-app.sh` script. When Git web
+  hooks are invoked after a push to the repository, the upgrade script may be
+  called twice in quick succession, once for the commits push and once for the
+  tags push.
+
 ### Fixed
 
 - Use `passenger-ruby27` rather than `passenger-ruby26` as base image.
