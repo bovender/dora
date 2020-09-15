@@ -4,16 +4,17 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-echo "# dora app upgrade script"
-
 if [[ $(id -u -n) != app ]]; then
   echo "Script was invoked by user '$(id -u -n)'; re-invoking as 'app'..."
+  echo
   exec setuser app $0
 fi
 
+echo "# dora app upgrade script"
+
 APP_DIR=/home/app/rails
-LOCK_PRIMARY=/upgrade-lock.primary
-LOCK_SECONDARY=/upgrade-lock.secondary
+LOCK_PRIMARY=/home/app/upgrade-lock.primary
+LOCK_SECONDARY=/home/app/upgrade-lock.secondary
 WAIT_SECONDS=60
 WAIT_INTERVAL=10
 E_UPGRADE_LOCKED=1
@@ -28,19 +29,29 @@ function check_lock {
   if [[ ! -f $LOCK_PRIMARY ]]; then
     touch $LOCK_PRIMARY || echo "WARNING: Unable to create primary lock file!"
   elif [[ -f $LOCK_SECONDARY ]]; then
+    echo "FATAL: Two lock files present -- not attempting to upgrade the app!"
+    echo "FATAL: Lock file 1: $LOCK_PRIMARY"
+    echo "FATAL: Lock file 2: $LOCK_SECONDARY"
+    echo "FATAL: If this is an error, remove the lock files manually."
     exit 0
   else
     # Primary lock present, but secondary lock not: set secondary lock and wait
     touch $LOCK_SECONDARY || echo "WARNING: Unable to create secondary lock file!"
+    echo "INFO: Another upgrade is in progress, waiting at most $WAIT_SECONDS seconds..."
+    echo -n "INFO: "
     WAITING=0
-    while [[ -f $LOCK_PRIMARY ]] && (( $WAITING <= $WAIT_SECONDS )); do
+    while [[ -f $LOCK_PRIMARY ]] && (( $WAITING < $WAIT_SECONDS )); do
       (( WAITING = WAITING + WAIT_INTERVAL ))
+      echo -n "$WAITING... "
       sleep $WAIT_INTERVAL
     done
+    echo
     rm $LOCK_SECONDARY || echo "WARNING: Unable to remove secondary lock file!"
-    # If the primary lock is still present after waiting politely, then quit
+    # Quit if the primary lock is still present after waiting politely
     if [[ -f $LOCK_PRIMARY ]]; then
-      echo "ERROR: Upgrade still locked after waiting $WAIT_SECONDS seconds, exiting!"
+      echo "FATAL: Upgrade still locked after waiting $WAITING seconds, exiting!"
+      echo "FATAL: If you think this is an error, remove the lock file manually:"
+      echo "FATAL: rm $LOCK_PRIMARY"
       exit $E_UPGRADE_LOCKED
     fi
   fi
@@ -85,7 +96,5 @@ set -x
 cd $APP_DIR
 PREVIOUS_VERSION=$(git describe 2>/dev/null || git rev-parse HEAD)
 pull && (upgrade || rollback)
-RESULT=$?
 set +x
 release_lock
-exit $RESULT
