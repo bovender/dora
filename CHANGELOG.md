@@ -1,5 +1,7 @@
 # dora changelog
 
+## Version 2.1.0 (2020-09-15)
+
 ### Improved
 
 - Added a simple locking mechanism to the `upgrade-app.sh` script. When Git web
