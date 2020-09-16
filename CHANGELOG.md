@@ -1,5 +1,9 @@
 # dora changelog
 
+### Fixed
+
+- `rails-console.sh` now invokes `rails` as the `app` user.
+
 ## Version 2.1.0 (2020-09-15)
 
 ### Improved
