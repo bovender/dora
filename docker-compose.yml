@@ -10,7 +10,7 @@ services:
     ports:
       - "127.0.0.1:3000:80"
     volumes:
-      - ${DORA_HOST_APP_DIR}:/home/app/rails/
+      - ${DORA_HOST_APP_DIR}:/home/dora/rails/
     environment:
       # By omitting the values, the variables are taken
       # from the current environment. This requires an

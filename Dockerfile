@@ -23,6 +23,10 @@ ENV WKHTMLTOPDF ""
 ENV WKHTMLTOPDF_URL "https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb"
 ENV WKHTMLTOPDF_SUM "db48fa1a043309c4bfe8c8e0e38dc06c183f821599dd88d4e3cea47c5a5d4cd3"
 
+# Rename the 'app' user and group to 'dora'
+RUN groupmod -n dora app
+RUN usermod -l dora -m -d /home/dora app
+
 # Install nodejs in passenger-docker's way
 RUN mkdir /pd_build
 ADD nodejs.sh /pd_build
@@ -36,7 +40,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     apt-get install -y --no-install-recommends imagemagick tzdata yarn
 
 ENV HOME /root
-WORKDIR /home/app
+WORKDIR /home/dora
 
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
@@ -76,18 +80,18 @@ RUN chmod +x /etc/service/sidekiq/run
 ADD logrotate-logs /etc/logrotate.d/logs
 RUN chmod 0644 /etc/logrotate.d/logs
 
-# Install either the dummy SSH key or the configured one
+# Install either the dummy SSH key or the configured one and unlock the 'dora' user
 ADD sshd_config /etc/ssh/sshd_config
 RUN rm -f /etc/service/sshd/down &&\
-    passwd -u app
+    passwd -u dora
 ADD ${PUBLIC_KEY} /tmp/key.pub
-RUN cat /tmp/key.pub >> /home/app/.ssh/authorized_keys &&\
+RUN cat /tmp/key.pub >> /home/dora/.ssh/authorized_keys &&\
     rm -f /tmp/key.pub &&\
-    chown app:app /home/app/.ssh/authorized_keys &&\
-    chmod 0700 /home/app/.ssh &&\
-    chmod 0600 /home/app/.ssh/authorized_keys
+    chown dora:dora /home/dora/.ssh/authorized_keys &&\
+    chmod 0700 /home/dora/.ssh &&\
+    chmod 0600 /home/dora/.ssh/authorized_keys
 
 # Clean up APT when done.
 # RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-WORKDIR /home/app/rails
+WORKDIR /home/dora/rails

@@ -4,17 +4,17 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-if [[ $(id -u -n) != app ]]; then
-  echo "Script was invoked by user '$(id -u -n)'; re-invoking as 'app'..."
+if [[ $(id -u -n) != dora ]]; then
+  echo "Script was invoked by user '$(id -u -n)'; re-invoking as 'dora'..."
   echo
-  exec setuser app $0
+  exec setuser dora $0
 fi
 
 echo "# dora app upgrade script"
 
-APP_DIR=/home/app/rails
-LOCK_PRIMARY=/home/app/upgrade-lock.primary
-LOCK_SECONDARY=/home/app/upgrade-lock.secondary
+APP_DIR=/home/dora/rails
+LOCK_PRIMARY=/home/dora/upgrade-lock.primary
+LOCK_SECONDARY=/home/dora/upgrade-lock.secondary
 WAIT_SECONDS=60
 WAIT_INTERVAL=10
 E_UPGRADE_LOCKED=1

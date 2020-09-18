@@ -10,6 +10,9 @@ The Dockerfile and the maintenance scripts are generic. Customization for
 specific apps happens through Docker build `ARGS` and environment variables.
 There is built-in support to generate PDF files with [wkhtmltopdf][].
 
+The container is expected to sit behind a [reverse proxy](#reverse-proxy) that
+handles name-based virtual hosts, SSL, etc.
+
 > If you stumble upon this, be advised that this is amateur work. It may suit
 your needs, but it was mainly created to help me with my own projects. I would
 be more than happy though to take pull request to improve this.
@@ -18,19 +21,35 @@ An alternative and much more sophisticated approach to Dockerizing a Rails app
 can be found at [Discourse][].
 
 ## Outline
+<!-- TOC -->
 
 - [Customization](#customization)
+  - [Environment variables](#environment-variables)
+  - [Build argument](#build-argument)
+  - [YAML snippet for docker-compose](#yaml-snippet-for-docker-compose)
+  - [Using ENV in your Rails app](#using-env-in-your-rails-app)
+  - [Reverse proxy](#reverse-proxy)
 - [Sidekiq](#sidekiq)
 - [Upgrading the app](#upgrading-the-app)
 - [Data persistence](#data-persistence)
 - [SSH access](#ssh-access)
 - [wkhtmltopdf support](#wkhtmltopdf-support)
 - [Development and testing](#development-and-testing)
+  - [MailHog](#mailhog)
 - [Container time zone](#container-time-zone)
 - [Logrotate](#logrotate)
 - [Troubleshooting](#troubleshooting)
+  - [Sending mail](#sending-mail)
+  - [Receiving mail](#receiving-mail)
+  - [Database configuration](#database-configuration)
+  - [SMTP configuration](#smtp-configuration)
+  - [Required gems](#required-gems)
+  - [Sidekiq configuration](#sidekiq-configuration)
+  - [Avoiding confusion](#avoiding-confusion)
 - [Further reading](#further-reading)
 - [License](#license)
+
+<!-- /TOC -->
 
 ## Customization
 
@@ -68,13 +87,13 @@ There is one argument that can be used during image build:
 
 | Argument | Use | Default
 |----------|-----|---------
-| `PUBLIC_KEY` | Public SSH key that will be added to `/home/app/.ssh/authorized_keys` | `unusable.pub`
+| `PUBLIC_KEY` | Public SSH key that will be added to `/home/dora/.ssh/authorized_keys` | `unusable.pub`
 
 The repository contains an `unusable_pub` key whose private key has been
 discarded (promise! ;-) ). Its sole purpose is to be act as a dummy key in the
 repository. To use your own key, set the `PUBLIC_KEY` argument to the path of
 the _public_ key and store the private key in a safe place. NB: The public key
-must be in the Dora's directory because it must be sent to the Docker daemon
+must be in Dora's directory because it must be sent to the Docker daemon
 along with the rest of the build context. Files ending with `.pub` are ignored
 in the repository.
 
@@ -82,7 +101,7 @@ See below for more information about SSH'ing into the container.
 
 ### YAML snippet for docker-compose
 
-To use this with [docker-compose][], clone the repository, then add the
+To use dora with [docker-compose][], clone the repository, then add the
 following snippet to your `docker-compose.yml` file and customize it (e.g.,
 replace `MY_APP` with something else).
 
@@ -215,8 +234,7 @@ I use [Apache2][] as a reverse proxy to relay requests from the Docker host to
 the container. This can of course also be done with [Nginx][] or any other web
 server that can act as a reverse proxy, but I have more experience with Apache.
 
-NB: This is an [Ansible][] template with some Ansible variables
-in it.
+NB: This is an [Ansible][] template with some Ansible variables in it.
 
 ```apache
 # Redirect all HTTP requests to HTTPS
@@ -281,21 +299,22 @@ is [Capistrano][].
 Data can be persisted with a Docker volume that is mounted onto `/shared`. The
 maintenance scripts link several directories into `/shared`:
 
-- `/home/app/rails/vendor/bundle` (which contains the bundled Gems)
-- `/home/app/rails/log` (Rails' log files)
+- `/home/dora/rails/vendor/bundle` (which contains the bundled Gems)
+- `/home/dora/rails/log` (Rails' log files)
 
 ## SSH access
 
 Dora enables the SSH daemon be default.
 
 `passenger-docker` expects SSH logins by root. I have decided to restrict
-SSH access to the `app` user. Normally, the `app` user is not allowed to log
+SSH access to the `dora` user. Normally, the `dora` user is not allowed to log
 into the container because `passenger-docker` (or `baseimage-docker` from which
-it is derived) locks the `app` user. If you attempt to log in with SSH, the
-following message is logged to `/var/log/auth.log`:
+it is derived) locks the `dora` user (who is still called `app` when this
+happens). If you attempt to log in with SSH, the following message is logged to
+`/var/log/auth.log`:
 
 ```plain
-User not allowed app because account is locked
+User not allowed dora because account is locked
 ```
 
 Dora configures `sshd` to not allow root logins and not allow password logins.
@@ -307,7 +326,7 @@ make use of the `ProxyCommand` configuration option of OpenSSH:
 # ~/.ssh/config
 Host my_rails_app
   HostName 172.22.0.22 # This is likely to change when the container is recreated
-  User app
+  User dora
   IdentityFile ~/.ssh/docker # Private key, must exist on your _workstation_!
   ProxyCommand ssh <your_server> -W %h:%p # -W enables STDIN/STDOUT redirection
 
@@ -335,9 +354,9 @@ forget to also place the SHA-256 checksum into `$WKHTMLTOPDF_SUM`.
 ## Development and testing
 
 To use `dora` for development and testing, you may want to set `$GIT_PULL` to
-`false` and mount your entire Rails application's directory onto `/home/app`.
+`false` and mount your entire Rails application's directory onto `/home/dora`.
 
-With `$GIT_PULL` set to `false`, it is assumed that the entire `/home/app/rails`
+With `$GIT_PULL` set to `false`, it is assumed that the entire `/home/dora/rails`
 directory is a mounted Docker volume. The bootstrapping script will _not_ link
 directories to `/shared/...`. It _will_ however set Bundler's `path` config
 option to `vendor/bundle` (even though it does not set `deployment` mode), so
@@ -392,7 +411,7 @@ you can configure a [Postfix][] mail transport like so:
 ```postfix
 # /etc/postfix/master.cf
 app           unix  -       n       n       -       -       pipe
-  flags=DRhu user=USER:docker directory=/DIR/OF/DOCKER-COMPOSE-FILE argv=/usr/local/bin/docker-compose exec -T dora_rails_1 bash -c {(cd /home/app/rails; bin/rails runner -e production bin/receive.rb ${extension})}
+  flags=DRhu user=USER:docker directory=/DIR/OF/DOCKER-COMPOSE-FILE argv=/usr/local/bin/docker-compose exec -T dora_rails_1 bash -c {(cd /home/dora/rails; bin/rails runner -e production bin/receive.rb ${extension})}
 ```
 
 Replace `USER` with the user that owns the compose file. NB: It is imperative
@@ -479,7 +498,6 @@ Sidekiq.configure_client do |config|
 end
 ```
 
-
 ### Avoiding confusion
 
 One thing that I initially had quite a hard time wrapping my head around is the
@@ -503,20 +521,23 @@ A note on the **user name** and **application directory**: `passenger-docker`
 creates a user called `app`; this is hard-coded into the `passenger-docker`
 image and cannot be changed without patching the upstream repository.
 Starting with version 2.0.0, `dora` installs the application into a directory
-in this user's home directory that is called `rails`; previously, this directory
+in the main user's home directory that is called `rails`; previously, this directory
 was also named `app`, resulting in confusing path names such as
-`/home/app/app/app`. Now, the directory where the Rails application is installed is:
+`/home/dora/app/app`. Starting with version 3.0.0, the main user is renamed
+to `dora` by the Dockerfile. Thus, the directory where the Rails application is
+installed is:
 
 ```bash
-/home/app/rails
+/home/dora/rails
 ```
 
 Initially I had intended to make the application directory configurable, but it
 would have been overly complicated to adjust the Nginx server configuration to
 this custom directory, at least if an environment variable was involved.
-Therefore, the `rails` directory is now hard-coded into `dora`.
+Therefore, the `rails` directory is now hard-coded into dora.
 
 ## Further reading
+
 - [Discourse's Docker container][Discourse]
 
 ## License

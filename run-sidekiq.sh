@@ -4,6 +4,6 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-APP_DIR=/home/app/rails
+APP_DIR=/home/dora/rails
 cd $APP_DIR
-exec /sbin/setuser app bundle exec sidekiq -e $PASSENGER_APP_ENV > log/sidekiq.log
+exec /sbin/setuser dora bundle exec sidekiq -e $PASSENGER_APP_ENV > log/sidekiq.log

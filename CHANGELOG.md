@@ -1,8 +1,19 @@
 # dora changelog
 
+### Breaking change
+
+- The app user and group were renamed from 'app' (passenger-docker's default)
+  to 'dora' in order to further eliminate confusion. Now there is only one
+  directory named 'app', and that is the said directory in a Rails application.
+  **Important:** If you relay e-mails into your dora container as described in
+  README.md, you will need to adjust the paths in your mail server configuration
+  files, e.g. `master.cf` if you use Postfix.
+
 ### Fixed
 
 - `rails-console.sh` now invokes `rails` as the `app` user.
+- Removed the erroneous `server_name` directive from the Nginx site configuration
+  file.
 
 ## Version 2.1.0 (2020-09-15)
 
