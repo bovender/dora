@@ -1,5 +1,6 @@
 # dora
 
+<!-- TOC ignore:true -->
 ## *DO*cker container for *RA*ils
 
 This is a little project that helps me to set up and operate [Docker][]
@@ -20,9 +21,11 @@ be more than happy though to take pull request to improve this.
 An alternative and much more sophisticated approach to Dockerizing a Rails app
 can be found at [Discourse][].
 
+<!-- TOC ignore:true -->
 ## Outline
 <!-- TOC -->
 
+- [Current versions of third-party components](#current-versions-of-third-party-components)
 - [Customization](#customization)
   - [Environment variables](#environment-variables)
   - [Build argument](#build-argument)
@@ -34,6 +37,7 @@ can be found at [Discourse][].
 - [Data persistence](#data-persistence)
 - [SSH access](#ssh-access)
 - [wkhtmltopdf support](#wkhtmltopdf-support)
+- [Status reports](#status-reports)
 - [Development and testing](#development-and-testing)
   - [MailHog](#mailhog)
 - [Container time zone](#container-time-zone)
@@ -50,6 +54,16 @@ can be found at [Discourse][].
 - [License](#license)
 
 <!-- /TOC -->
+
+## Current versions of third-party components
+
+| Domain                 | Component                                    |         |
+|------------------------|----------------------------------------------|--------:|
+| Dockerfile             | [phusion/passenger-ruby27][passenger-docker] | 1.0.11
+| install-wkhtmltopdf.sh | [wkhtmltopdf][]                              | 0.12.5
+| docker-compose.yml     | Postgres                                     | 11
+| docker-compose.yml     | Adminer                                      | 4.7
+| docker-compose.yml     | [Mailhog][]                                  | 1.0.0
 
 ## Customization
 
@@ -75,6 +89,8 @@ Customization is mostly done with environment variables.
 | `RAILS_SMTP_PORT` | SMTP port | 587
 | `RAILS_SMTP_USER` | SMTP user name | `$APP_NAME`
 | `RAILS_SMTP_PASS` | SMTP password |
+| `RAILS_SMTP_FROM` | FROM address for [system messages](#status-reports) |
+| `EMAIL_REPORTS_TO` | Optional e-mail recipient for daily [status reports](#status-reports) |
 | `SECRET_KEY_BASE` | Rails' secret key base |
 | `TIMEZONE` | Time zone of the container | `UCT`
 | `NO_WKHTMLTOPDF` | Do not attempt to install [wkhtmltopdf][] | (empty)
@@ -350,6 +366,13 @@ Dora from installing [wkhtmltopdf][].
 
 You can customize the download by overriding `$WKHTMLTOPDF_URL`. Just do not
 forget to also place the SHA-256 checksum into `$WKHTMLTOPDF_SUM`.
+
+## Status reports
+
+If the environment variables `$RAILS_SMTP_FROM` and `$EMAIL_REPORTS_TO` are set,
+dora will send a daily status e-mail that reports on the services inside the
+container. Of course, this does not eliminate the need to properly monitor the
+container in production.
 
 ## Development and testing
 

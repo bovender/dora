@@ -31,6 +31,10 @@ set -x -e
 # Since the above did not work, we modify /etc/environment directly
 sed -i 's_^PATH=.\+$_PATH="'$APP_DIR'/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin"_' /etc/environment
 
+configure-msmtp.sh
+DAILY_STATUS_JOB=/etc/cron.daily/send-dora-status-mail
+echo "/bin/bash -l /usr/local/bin/send-dora-status-mail.sh" > $DAILY_STATUS_JOB
+chod +x $DAILY_STATUS_JOB
 
 if [ "$GIT_PULL" != "false" ]; then
   git clone -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||

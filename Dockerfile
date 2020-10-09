@@ -14,10 +14,12 @@ ENV RAILS_PRECOMPILE_ASSETS "true"
 ENV RAILS_SMTP_HOST ""
 ENV RAILS_SMTP_USER ${APP_NAME}
 ENV RAILS_SMTP_PASS ""
+ENV RAILS_SMTP_FROM ""
 ENV RAILS_DB_HOST ""
 ENV RAILS_DB_NAME ${APP_NAME}
 ENV RAILS_DB_USER ${APP_NAME}
 ENV RAILS_DB_PASS ""
+ENV EMAIL_REPORTS_TO ""
 ENV TIMEZONE="UCT"
 ENV WKHTMLTOPDF ""
 ENV WKHTMLTOPDF_URL "https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb"
@@ -37,7 +39,7 @@ RUN /pd_build/nodejs.sh
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list &&\
     apt-get update &&\
-    apt-get install -y --no-install-recommends imagemagick tzdata yarn
+    apt-get install -y --no-install-recommends imagemagick msmtp tzdata yarn
 
 ENV HOME /root
 WORKDIR /home/dora
@@ -64,6 +66,15 @@ RUN chmod +x /usr/local/bin/rails-console.sh
 
 ADD dora-banner.sh /usr/local/bin/dora-banner.sh
 RUN chmod +x /usr/local/bin/dora-banner.sh
+
+ADD configure-msmtp.sh /usr/local/bin/configure-msmtp.sh
+RUN chmod +x /usr/local/bin/configure-msmtp.sh
+
+ADD dora-status.sh /usr/local/bin/dora-status.sh
+RUN chmod +x /usr/local/bin/dora-status.sh
+
+ADD send-dora-status-mail.sh /usr/local/bin/send-dora-status-mail.sh
+RUN chmod +x /usr/local/bin/send-dora-status-mail.sh
 
 RUN mkdir -p /etc/my_init.d
 ADD bootstrap-container.sh /etc/my_init.d/10_bootstrap_container.sh
