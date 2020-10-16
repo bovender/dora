@@ -41,10 +41,10 @@ done
 
 if [[ $RAILS_SMTP_HOST == "" ]]; then
   echo "FATAL: environment variable \$RAILS_SMTP_HOST is empty!"
-  exit 1
+  exit
 elif [[ -a $MSMTPRC && $FORCE != "1" ]]; then
   echo "FATAL: $MSMTPRC exists; use -f or --force to overwrite"
-  exit 2
+  exit
 else
   [[ -a $MSMTPRC ]] && echo "WARNING: $MSMTPRC exists; forcing overwrite!"
   # Note that the heredoc lines must be preceded by true tabs
