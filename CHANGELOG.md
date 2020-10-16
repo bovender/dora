@@ -1,5 +1,12 @@
 # dora changelog
 
+### Fixed
+
+- Fixed a fatal typo in the bootstrapping script.
+- Exit gracefully during msmtp configuration to not make the bootstrapping fail.
+- Do not use `uptime` in the status reports as it would reflect the host's
+  uptime rather than the container uptime.
+
 ## Version 3.0.0 (2020-10-09)
 
 ### Breaking change
