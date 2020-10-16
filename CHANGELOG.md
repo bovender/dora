@@ -1,5 +1,7 @@
 # dora changelog
 
+## Version 3.0.1 (2020-10-16)
+
 ### Fixed
 
 - Fixed a fatal typo in the bootstrapping script.
