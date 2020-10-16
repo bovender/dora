@@ -16,7 +16,9 @@ fi
 echo -e "# dora status\n"
 echo "- Application mame:   $APP_NAME"
 echo "- Repository version: $GIT_DESCRIPTION"
-echo "- Container uptime:   `uptime`"
+
+echo -e "\n\n## top"
+top -b -n 1 | tail -n +7 | head -n 6
 
 echo -e "\n\n## nginx status\n"
 # TODO: need to e sudo?
