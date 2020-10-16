@@ -32,9 +32,14 @@ set -x -e
 sed -i 's_^PATH=.\+$_PATH="'$APP_DIR'/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin"_' /etc/environment
 
 configure-msmtp.sh
-DAILY_STATUS_JOB=/etc/cron.daily/send-dora-status-mail
-echo "/bin/bash -l /usr/local/bin/send-dora-status-mail.sh" > $DAILY_STATUS_JOB
-chod +x $DAILY_STATUS_JOB
+# Placing a script 'send-dora-status-mail' into /etc/cron.daily did not work
+sed -i '/begin dora jobs/,/end dora jobs/d' /etc/crontab
+# MUST have real tab characters rather than spaces in front of the heredoc lines
+cat <<-EOF >> /etc/crontab
+	# begin dora jobs
+	0 5 * * * root /bin/bash -l /usr/local/bin/send-dora-status-mail.sh
+	# end dora jobs
+	EOF
 
 if [ "$GIT_PULL" != "false" ]; then
   git clone -b $GIT_BRANCH https://${GIT_USER%% }${GIT_USER:+:}${GIT_PASS%% }${GIT_USER:+@}${GIT_REPO#https://} "$APP_DIR" ||
