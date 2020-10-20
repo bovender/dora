@@ -1,5 +1,9 @@
 # dora changelog
 
+### Fixed
+
+- Include `/bin` in `PATH`.
+
 ## Version 3.0.1 (2020-10-16)
 
 ### Fixed

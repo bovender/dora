@@ -29,7 +29,7 @@ set -x -e
 # See: https://github.com/phusion/baseimage-docker#environment_variables
 # echo -e "/home/dora/rails/bin:$PATH" > /etc/container_environment/PATH
 # Since the above did not work, we modify /etc/environment directly
-sed -i 's_^PATH=.\+$_PATH="'$APP_DIR'/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin"_' /etc/environment
+sed -i 's_^PATH=.\+$_PATH="'$APP_DIR'/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/sbin"_' /etc/environment
 
 configure-msmtp.sh
 # Placing a script 'send-dora-status-mail' into /etc/cron.daily did not work
