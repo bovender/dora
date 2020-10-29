@@ -17,7 +17,7 @@ echo -e "# dora status\n"
 echo "- Application mame:   $APP_NAME"
 echo "- Repository version: $GIT_DESCRIPTION"
 
-echo -e "\n\n## top"
+echo -e "\n\n## top\n"
 top -b -n 1 | tail -n +7 | head -n 6
 
 echo -e "\n\n## nginx status\n"
@@ -37,5 +37,9 @@ for F in $APP_DIR/log/*.log; do
   tail -n $LOG_TAIL_LINES $F
   echo "\`\`\`"
 done
+
+echo -e "\n\n## Pending package upgrades\n"
+echo -e "(NB: Package list is not automatically updated for this listing.)\n"
+apt list --upgradable
 
 echo -e "\n---"
