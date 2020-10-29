@@ -15,7 +15,7 @@ echo "# dora app upgrade script"
 APP_DIR=/home/dora/rails
 LOCK_PRIMARY=/home/dora/upgrade-lock.primary
 LOCK_SECONDARY=/home/dora/upgrade-lock.secondary
-WAIT_SECONDS=60
+WAIT_SECONDS=120
 WAIT_INTERVAL=10
 E_UPGRADE_LOCKED=1
 

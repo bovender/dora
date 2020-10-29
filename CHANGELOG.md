@@ -1,5 +1,9 @@
 # dora changelog
 
+### Improved
+
+- Increase waiting time for concurrent upgrade requests from 60 to 120 seconds.
+
 ### Fixed
 
 - Include `/bin` in `PATH`.
