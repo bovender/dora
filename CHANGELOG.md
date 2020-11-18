@@ -2,7 +2,7 @@
 
 ### Improved
 
-- Increase waiting time for concurrent upgrade requests from 60 to 120 seconds.
+- Increase waiting time for concurrent upgrade requests from 60 to 300 seconds.
 - Show upgradeable packages in status message.
 
 ### Fixed

@@ -15,8 +15,8 @@ echo "# dora app upgrade script"
 APP_DIR=/home/dora/rails
 LOCK_PRIMARY=/home/dora/upgrade-lock.primary
 LOCK_SECONDARY=/home/dora/upgrade-lock.secondary
-WAIT_SECONDS=120
-WAIT_INTERVAL=10
+WAIT_SECONDS=300
+WAIT_INTERVAL=30
 E_UPGRADE_LOCKED=1
 
 # Check if an upgrade is currently in progress.
@@ -80,12 +80,14 @@ function upgrade {
   bundle exec rails db:migrate &&\
   bundle exec rails assets:precompile &&\
   git describe --always > tmp/version &&\
-  passenger-config restart-app $APP_DIR
+  passenger-config restart-app $APP_DIR &&\
+  set +x &&\
+  echo -e "\n\n***** UPGRADE SUCCEEDED! :-) *****\n"
 }
 
 function rollback {
   set +x
-  echo "***** UPGRADE FAILED! *****"
+  echo "***** UPGRADE FAILED! :-( *****"
   echo "Rolling back to $PREVIOUS_VERSION"
   set -x
   git reset --hard $PREVIOUS_VERSION
