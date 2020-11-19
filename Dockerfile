@@ -102,6 +102,8 @@ RUN cat /tmp/key.pub >> /home/dora/.ssh/authorized_keys &&\
     chmod 0700 /home/dora/.ssh &&\
     chmod 0600 /home/dora/.ssh/authorized_keys
 
+RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
+
 # Clean up APT when done.
 # RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
