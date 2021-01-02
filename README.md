@@ -565,7 +565,7 @@ Therefore, the `rails` directory is now hard-coded into dora.
 
 ## License
 
-(c) 2020 Daniel Kraus (bovender).
+(c) 2020-2021 Daniel Kraus (bovender).
 
 MIT license. See [`LICENSE`](LICENSE).
 
