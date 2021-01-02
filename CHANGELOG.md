@@ -1,5 +1,7 @@
 # dora changelog
 
+## Version 3.1.0 (2021-01-02)
+
 ### Changed
 
 - Upgraded `baseimage-docker` to [rel-1.0.12](https://github.com/phusion/passenger-docker/releases/tag/rel-1.0.12).
@@ -9,10 +11,12 @@
 
 - Increased waiting time for concurrent upgrade requests from 60 to 300 seconds.
 - Show upgradeable packages in status message.
+- Include application environment in status message.
 
 ### Fixed
 
 - Include `/bin` in `PATH`.
+- Fix file-based locking of the upgrade progress.
 
 ## Version 3.0.1 (2020-10-16)
 
