@@ -14,8 +14,9 @@ else
 fi
 
 echo -e "# dora status\n"
-echo "- Application mame:   $APP_NAME"
-echo "- Repository version: $GIT_DESCRIPTION"
+echo "- Application name:        $APP_NAME"
+echo "- Repository version:      $GIT_DESCRIPTION"
+echo "- Application environment: $PASSENGER_APP_ENV"
 
 echo -e "\n\n## top\n"
 top -b -n 1 | tail -n +7 | head -n 6
