@@ -27,6 +27,7 @@ E_UPGRADE_LOCKED=1
 # two lock files, we bail out immediately.
 function check_lock {
   if [[ ! -f $LOCK_PRIMARY ]]; then
+    MY_LOCK=$LOCK_PRIMARY
     touch $LOCK_PRIMARY || echo "WARNING: Unable to create primary lock file!"
   elif [[ -f $LOCK_SECONDARY ]]; then
     echo "FATAL: Two lock files present -- not attempting to upgrade the app!"
@@ -36,6 +37,7 @@ function check_lock {
     exit 0
   else
     # Primary lock present, but secondary lock not: set secondary lock and wait
+    MY_LOCK=$LOCK_SECONDARY
     touch $LOCK_SECONDARY || echo "WARNING: Unable to create secondary lock file!"
     echo "INFO: Another upgrade is in progress, waiting at most $WAIT_SECONDS seconds..."
     echo -n "INFO: "
@@ -46,7 +48,7 @@ function check_lock {
       sleep $WAIT_INTERVAL
     done
     echo
-    rm $LOCK_SECONDARY || echo "WARNING: Unable to remove secondary lock file!"
+    rm $LOCK_SECONDARY 2>/dev/null || echo "WARNING: Unable to remove secondary lock file!"
     # Quit if the primary lock is still present after waiting politely
     if [[ -f $LOCK_PRIMARY ]]; then
       echo "FATAL: Upgrade still locked after waiting $WAITING seconds, exiting!"
@@ -58,12 +60,8 @@ function check_lock {
 }
 
 function release_lock {
-  if [[ -f $LOCK_SECONDARY ]]; then
-    rm $LOCK_SECONDARY || echo "WARNING: Unable to remove secondary lock file!"
-  elif [[ -f $LOCK_PRIMARY ]]; then
-    rm $LOCK_PRIMARY || echo "WARNING: Unable to remove primary lock file!"
-  else
-    echo "WARNING: Did not find any lock file?!"
+  if [[ -f $MY_LOCK ]]; then
+    rm $MY_LOCK || echo "WARNING: Unable to remove my lock file!"
   fi
 }
 
