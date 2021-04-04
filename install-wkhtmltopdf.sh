@@ -25,9 +25,15 @@ if [ "$NO_WKHTMLTOPDF" != "" ]; then
   exit 0
 fi
 
-echo "wkhtmltopdf not found, attempting to download and install"
-set -x -e
-curl -L -s "$WKHTMLTOPDF_URL" -o $DEST_FILE
+echo "wkhtmltopdf not found..."
+if [ -f $DEST_FILE ]; then
+  echo "... but there is $DEST_FILE"
+else
+  echo "... attempting to download from $WKHTMLTOPDF_URL"
+  set -x -e
+  curl -L -s "$WKHTMLTOPDF_URL" -o $DEST_FILE
+fi
+
 echo "$WKHTMLTOPDF_SUM  $DEST_FILE" | sha256sum -c
 
 apt-get update
