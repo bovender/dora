@@ -1,5 +1,11 @@
 # dora changelog
 
+## Unreleased
+
+### Changed
+
+- Upgraded `baseimage-docker` to [rel-1.0.13](https://github.com/phusion/passenger-docker/releases/tag/rel-1.0.13).
+
 ## Version 3.1.0 (2021-01-02)
 
 ### Changed
