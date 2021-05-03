@@ -83,6 +83,7 @@ else
 fi
 
 export RAILS_ENV=$PASSENGER_APP_ENV
+echo $RAILS_ENV > /etc/container_environment/RAILS_ENV
 setuser dora bundle config --local path vendor/bundle
 setuser dora bundle config --local deployment $BUNDLE_DEPLOY
 setuser dora bundle config --delete without

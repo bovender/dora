@@ -19,6 +19,11 @@ WAIT_SECONDS=300
 WAIT_INTERVAL=30
 E_UPGRADE_LOCKED=1
 
+if [[ -z $RAILS_ENV ]]; then
+  echo "WARNING: \$RAILS_ENV is empty! This is probably not what you want."
+  echo "WARNING: \$PASSENGER_APP_ENV=$PASSENGER_APP_ENV"
+fi
+
 # Check if an upgrade is currently in progress.
 # When pushing and pushing --tags to the main branch, the web hook will be
 # executed twice in short succession. We use two lock files to deal with this
