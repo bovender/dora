@@ -391,6 +391,10 @@ via environment variables. A `.env` file lends itself well to this
 configuration. The composition consists of the rails app, Postgres, and Redis.
 See `sample.env` for usage instructions.
 
+For more information on integration/system testing with a Dockerized Rails
+application, see <https://dev.to/hint/rails-system-tests-in-docker-4cj1>
+as well as other resources on the web.
+
 ### MailHog
 
 `dora`'s Docker composition includes [MailHog][] to facilitate interacting with

@@ -9,8 +9,10 @@ services:
         PUBLIC_KEY: "docker.pub"
     ports:
       - "127.0.0.1:3000:80"
+      - "127.0.0.1:43447:43447"
     volumes:
-      - ${DORA_HOST_APP_DIR}:/home/dora/rails/
+      - "${DORA_HOST_APP_DIR}:/home/dora/rails/"
+      - "${DORA_HOST_VOL_DIR}/tmp/:/tmp/"
     environment:
       # By omitting the values, the variables are taken
       # from the current environment. This requires an
@@ -41,6 +43,8 @@ services:
     image: postgres:11
     volumes:
       - ${DORA_HOST_VOL_DIR}/db:/var/lib/postgresql/data
+    # uncomment the following to enable verbose logging to STDOUT
+    # command: ["postgres", "-c", "log_statement=all"]
     environment:
       POSTGRES_PASSWORD: postgres
   adminer:

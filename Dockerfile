@@ -83,6 +83,8 @@ ADD install-wkhtmltopdf.sh /etc/my_init.d/90_install_wkhtmltopdf.sh
 RUN chmod +x /etc/my_init.d/90_install_wkhtmltopdf.sh
 ADD set-timezone.sh /etc/my_init.d/01_set_timezone.sh
 RUN chmod +x /etc/my_init.d/01_set_timezone.sh
+ADD set-host-docker-internal.sh /etc/my_init.d/02_set_host_docker_internal.sh
+RUN chmod +x /etc/my_init.d/02_set_host_docker_internal.sh
 
 RUN mkdir -p /etc/service/sidekiq
 ADD run-sidekiq.sh /etc/service/sidekiq/run
