@@ -6,6 +6,7 @@
 
 - Upgraded `baseimage-docker` to [rel-1.0.13](https://github.com/phusion/passenger-docker/releases/tag/rel-1.0.13).
 - If wkhtmltopdf is present, do not attempt to download it again.
+- The Bash prompt now displays the values of `$APP_NAME` and `$RAILS_ENV`.
 
 ### Fixed
 

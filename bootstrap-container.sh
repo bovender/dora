@@ -86,6 +86,8 @@ export RAILS_ENV=$PASSENGER_APP_ENV
 echo $RAILS_ENV > /etc/container_environment/RAILS_ENV
 sed -i '/source \/etc\/container_environment\.sh/d' /root/.bashrc
 echo 'source /etc/container_environment.sh' >> /root/.bashrc
+sed -i "/PS1='\[/d" /root/.bashrc
+echo "PS1='[${APP_NAME:-(APP_NAME not set!)} ${RAILS_ENV:-(RAILS_ENV not set!)}]${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '" >> /root/.bashrc
 
 setuser dora bundle config --local path vendor/bundle
 setuser dora bundle config --local deployment $BUNDLE_DEPLOY
