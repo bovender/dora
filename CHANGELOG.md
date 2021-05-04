@@ -1,6 +1,6 @@
 # dora changelog
 
-## Unreleased
+## Version 3.2.0 (2021-05-04)
 
 ### Changed
 
