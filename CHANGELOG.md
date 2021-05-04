@@ -6,12 +6,11 @@
 
 - Upgraded `baseimage-docker` to [rel-1.0.13](https://github.com/phusion/passenger-docker/releases/tag/rel-1.0.13).
 - If wkhtmltopdf is present, do not attempt to download it again.
+- When executing the Bash shell with the default user (root) inside the container,
+  the environment variables are now being properly set by sourcing
+  `/etc/container_environment.sh` in `.bashrc`.
 - The Bash prompt now displays the values of `$APP_NAME` and `$RAILS_ENV`.
 - `host.docker.internal` now resolves to the container host.
-
-### Fixed
-
-- Another attempt to properly set $RAILS_ENV for login shells.
 
 ## Version 3.1.0 (2021-01-02)
 

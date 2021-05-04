@@ -27,9 +27,7 @@ set -x -e
 # Make rails commands easily accessible from the command line.
 # The modified PATH will be picked up by passenger-docker's my_init system.
 # See: https://github.com/phusion/baseimage-docker#environment_variables
-# echo -e "/home/dora/rails/bin:$PATH" > /etc/container_environment/PATH
-# Since the above did not work, we modify /etc/environment directly
-sed -i 's_^PATH=.\+$_PATH="'$APP_DIR'/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/sbin"_' /etc/environment
+echo -e "/home/dora/rails/bin:$PATH" > /etc/container_environment/PATH
 
 configure-msmtp.sh
 # Placing a script 'send-dora-status-mail' into /etc/cron.daily did not work
