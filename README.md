@@ -78,7 +78,7 @@ Customization is mostly done with environment variables.
 | `RAILS_PRECOMPILE_ASSETS` | Whether to precompile Rails assets | `true`
 | `GIT_PULL` | Indicates whether to clone and pull the app from a Git repository (*must* be `false` to suppress cloning and pulling) | `true`
 | `GIT_REPO` | URL of the Git repository |
-| `GIT_BRANCH` | Branch to check out of the Git repository | `master`
+| `GIT_BRANCH` | Branch to check out of the Git repository | `main`
 | `GIT_USER` | Git user that has read access for the repository (opt.) |
 | `GIT_PASS` | Password for the Git user (opt.) |
 | `RAILS_DB_HOST` | Database host | `db`

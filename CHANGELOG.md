@@ -12,6 +12,15 @@
 - The `WEBHOOK_SECRET` environment variable was renamed to
   `DORA_WEB_UPGRADER_SECRET` to play nice with DoraWebUpgrader.
 
+### Changed
+
+- The default name for the Git branch to checkout was changed from `master` to
+  `main`. On the other hand, e-mail addresses such as `webmaster@...` were not
+  changed. However, in the author's opinion, where is a difference between
+  "master" and "slave" terminology on the one hand and "master" as in
+  "someone is professionally trained to do something really well" on the other
+  (in Germany, "Meister" is a professional title).
+
 ### Fixed
 
 - The `shared-mime-info` package is now explicitly installed (following recent
