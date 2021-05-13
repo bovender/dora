@@ -16,6 +16,8 @@
 
 - The `shared-mime-info` package is now explicitly installed (following recent
   licensing changes in the wider Rails ecosystem).
+- Prevent flooding the container output with warnings if there is no `log`
+  directory.
 
 ## Version 3.2.0 (2021-05-04)
 

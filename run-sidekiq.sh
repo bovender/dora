@@ -6,4 +6,5 @@
 
 APP_DIR=/home/dora/rails
 cd $APP_DIR
+mkdir -p log
 exec /sbin/setuser dora bundle exec sidekiq -e $PASSENGER_APP_ENV > log/sidekiq.log
