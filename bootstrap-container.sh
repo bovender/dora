@@ -92,11 +92,19 @@ echo "PS1='[${APP_NAME:-(APP_NAME not set!)} ${RAILS_ENV:-(RAILS_ENV not set!)}]
 if [ "$GIT_PULL" == "false" -a ! -f Gemfile ]; then
   echo "# No Gemfile was found and were are not going to clone a repository."
   echo "# Exiting gracefully to allow setting up a new Rails application."
-  echo "# NB: You probably want to create a Rails app in the CURRENT directory"
-  echo "# rather than creating a new directory:"
+  echo "# NB: Rails will no install a new app in the current directory if this"
+  echo "# directory is called `rails`. Therefore, you may want to create the"
+  echo "# app in the home directory, and then move it into the correct place:"
   echo "#"
-  echo "#     rails new ."
+  echo "#     $ cd /home/dora"
+  echo "#     $ rails new my_new_app"
+  echo "#     $ mv my_new_app/* rails/"
+  echo "#     $ rm -r my_new_app"
   echo "#"
+  echo "# On your *development machine*, you will probably need to change the"
+  echo "# ownership of the files:"
+  echo "#"
+  echo "#     me@my-dev-machine:~/code/my_new_app$ sudo chown -R me:9999 *"
   exit 0
 fi
 
