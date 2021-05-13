@@ -82,10 +82,23 @@ fi
 
 export RAILS_ENV=$PASSENGER_APP_ENV
 echo $RAILS_ENV > /etc/container_environment/RAILS_ENV
-sed -i '/source \/etc\/container_environment\.sh/d' /root/.bashrc
-echo 'source /etc/container_environment.sh' >> /root/.bashrc
+sed -i '/^source \/etc\/profile/d' /root/.bashrc
+echo 'source /etc/profile' >> /root/.bashrc
 sed -i "/PS1='\[/d" /root/.bashrc
 echo "PS1='[${APP_NAME:-(APP_NAME not set!)} ${RAILS_ENV:-(RAILS_ENV not set!)}]${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '" >> /root/.bashrc
+
+# If there is no Gemfile (and we are told not to clone or pull a repository),
+# assume that this is a new application or plugin in development, and exit.
+if [ "$GIT_PULL" == "false" -a ! -f Gemfile ]; then
+  echo "# No Gemfile was found and were are not going to clone a repository."
+  echo "# Exiting gracefully to allow setting up a new Rails application."
+  echo "# NB: You probably want to create a Rails app in the CURRENT directory"
+  echo "# rather than creating a new directory:"
+  echo "#"
+  echo "#     rails new ."
+  echo "#"
+  exit 0
+fi
 
 setuser dora bundle config --local path vendor/bundle
 setuser dora bundle config --local deployment $BUNDLE_DEPLOY

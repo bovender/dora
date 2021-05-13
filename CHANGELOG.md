@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Improved
+
+- It is now possible to bootstrap a new Rails application, plugin or whatever
+  because the script that bootstraps the container no longer errors out if there
+  is no Rails application present. Instead, when configured not to pull any Git
+  repository (`GIT_PULL=false`), the script will gracefully exit if there is
+  no Rails application.
+
 ### Fixed
 
 - The `shared-mime-info` package is now explicitly installed (following recent
