@@ -35,7 +35,7 @@ services:
       - RAILS_SMTP_PASS
       - RAILS_SMTP_FROM
       - TIMEZONE
-      - WEBHOOK_SECRET
+      - DORA_WEB_UPGRADER_SECRET
     depends_on:
       - db
       - redis

@@ -9,6 +9,8 @@
   is no Rails application present. Instead, when configured not to pull any Git
   repository (`GIT_PULL=false`), the script will gracefully exit if there is
   no Rails application.
+- The `WEBHOOK_SECRET` environment variable was renamed to
+  `DORA_WEB_UPGRADER_SECRET` to play nice with DoraWebUpgrader.
 
 ### Fixed
 
