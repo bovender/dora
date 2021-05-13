@@ -27,6 +27,8 @@
   licensing changes in the wider Rails ecosystem).
 - Prevent flooding the container output with warnings if there is no `log`
   directory.
+- When upgrading the application, `upgrade-app.sh`  will now stop and re-start
+  the sidekiq service.
 
 ## Version 3.2.0 (2021-05-04)
 

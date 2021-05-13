@@ -100,6 +100,8 @@ check_lock
 set -x
 cd $APP_DIR
 PREVIOUS_VERSION=$(git describe 2>/dev/null || git rev-parse HEAD)
+sv stop sidekiq
 pull && (upgrade || rollback)
+sv start sidekiq
 set +x
 release_lock
