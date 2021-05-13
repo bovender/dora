@@ -39,7 +39,12 @@ RUN /pd_build/nodejs.sh
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list &&\
     apt-get update &&\
-    apt-get install -y --no-install-recommends imagemagick msmtp tzdata yarn
+    apt-get install -y --no-install-recommends \
+    imagemagick \
+    msmtp \
+    shared-mime-info \
+    tzdata \
+    yarn
 
 ENV HOME /root
 WORKDIR /home/dora
