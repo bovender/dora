@@ -1,5 +1,5 @@
 # See https://github.com/phusion/passenger-docker
-FROM phusion/passenger-ruby27:1.0.13
+FROM phusion/passenger-ruby27:2.0.0
 
 ARG PUBLIC_KEY="unusable_pub"
 ENV APP_NAME "rails"
