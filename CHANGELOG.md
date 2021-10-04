@@ -23,6 +23,8 @@
 
 ### Fixed
 
+- Adjust runit's service permissions for sidekiq so that it can be stopped and
+  restarted by the 'dora' group.
 - The `shared-mime-info` package is now explicitly installed (following recent
   licensing changes in the wider Rails ecosystem).
 - Prevent flooding the container output with warnings if there is no `log`

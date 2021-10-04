@@ -90,6 +90,8 @@ ADD set-timezone.sh /etc/my_init.d/01_set_timezone.sh
 RUN chmod +x /etc/my_init.d/01_set_timezone.sh
 ADD set-host-docker-internal.sh /etc/my_init.d/02_set_host_docker_internal.sh
 RUN chmod +x /etc/my_init.d/02_set_host_docker_internal.sh
+ADD service-permissions.sh /etc/my_init.d/03_service_permissions.sh
+RUN chmod +x /etc/my_init.d/03_service_permissions.sh
 
 RUN mkdir -p /etc/service/sidekiq
 ADD run-sidekiq.sh /etc/service/sidekiq/run
