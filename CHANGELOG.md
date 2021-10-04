@@ -31,6 +31,8 @@
   directory.
 - When upgrading the application, `upgrade-app.sh`  will now stop and re-start
   the sidekiq service.
+- Properly add the `restart-app.sh` script rather than another copy of the
+  `upgrade-app.sh` script into the image.
 
 ## Version 3.2.0 (2021-05-04)
 

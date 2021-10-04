@@ -63,7 +63,7 @@ RUN gem install bundler
 ADD upgrade-app.sh /usr/local/bin/upgrade-app.sh
 RUN chmod +x /usr/local/bin/upgrade-app.sh
 
-ADD upgrade-app.sh /usr/local/bin/restart-app.sh
+ADD restart-app.sh /usr/local/bin/restart-app.sh
 RUN chmod +x /usr/local/bin/restart-app.sh
 
 ADD rails-console.sh /usr/local/bin/rails-console.sh
