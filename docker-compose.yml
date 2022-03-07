@@ -35,6 +35,9 @@ services:
       - RAILS_SMTP_PASS
       - RAILS_SMTP_FROM
       - TIMEZONE
+      - DORA_USER
+      - DORA_UID
+      - DORA_GID
       - DORA_WEB_UPGRADER_SECRET
     depends_on:
       - db

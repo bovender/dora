@@ -1,8 +1,15 @@
 # See https://github.com/phusion/passenger-docker
-FROM phusion/passenger-ruby27:2.0.0
+FROM phusion/passenger-ruby30:2.1.0
 
 ARG PUBLIC_KEY="unusable_pub"
+ARG DORA_USER="dora"
+ENV DORA_USER ${DORA_USER}
+ARG DORA_UID=1000
+ENV DORA_UID ${DORA_UID}
+ARG DORA_GID=1000
+ENV DORA_GID ${DORA_GID}
 ENV APP_NAME "rails"
+ENV RAILS_DIR "/home/$DORA_USER/rails"
 ENV GIT_USER ""
 ENV GIT_PASS ""
 ENV GIT_REPO ""
@@ -25,10 +32,6 @@ ENV WKHTMLTOPDF ""
 ENV WKHTMLTOPDF_URL "https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb"
 ENV WKHTMLTOPDF_SUM "db48fa1a043309c4bfe8c8e0e38dc06c183f821599dd88d4e3cea47c5a5d4cd3"
 
-# Rename the 'app' user and group to 'dora'
-RUN groupmod -n dora app
-RUN usermod -l dora -m -d /home/dora app
-
 # Install nodejs in passenger-docker's way
 RUN mkdir /pd_build
 ADD nodejs.sh /pd_build
@@ -38,16 +41,32 @@ RUN /pd_build/nodejs.sh
 # Install yarn and other packages
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list &&\
+    export DEBIAN_FRONTEND=noninteractive && \
     apt-get update &&\
     apt-get install -y --no-install-recommends \
     imagemagick \
     msmtp \
     shared-mime-info \
+    sudo \
     tzdata \
-    yarn
+    yarn \
+    vim && \
+    apt-get upgrade -y -o Dpkg::Options::="--force-confold"
 
-ENV HOME /root
-WORKDIR /home/dora
+# Upstream configures an `app` user and group.
+# In order to avoid confusion with folder names (every rails app has a folder
+# named `app`), we rename the user and group to `dora` by default; this can be
+# configured with arguments to the `docker build` command. In addition, we
+# grant passwordless sudoer rights to the container user.
+RUN groupmod -n $DORA_USER -g $DORA_GID app && \
+    usermod -l $DORA_USER -u $DORA_UID -g $DORA_GID -m -d /home/$DORA_USER app && \
+    usermod -p "*" $DORA_USER && \
+    usermod -aG sudo $DORA_USER && \
+    usermod -aG docker_env $DORA_USER && \
+    echo "$DORA_USER ALL=NOPASSWD: ALL" >> /etc/sudoers.d/50-$DORA_USER
+
+# ENV HOME /root
+WORKDIR /home/$DORA_USER
 
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
@@ -56,6 +75,7 @@ CMD ["/sbin/my_init"]
 RUN rm -f /etc/service/nginx/down
 RUN rm /etc/nginx/sites-enabled/default
 ADD rails.conf /etc/nginx/sites-enabled/rails.conf
+RUN sed -i "s/DORA_USER_WILL_BE_REPLACED_BY_DOCKERFILE/$DORA_USER/g" /etc/nginx/sites-enabled/rails.conf
 ADD rails-env.conf /etc/nginx/main.d/rails-env.conf
 
 RUN gem install bundler
@@ -90,30 +110,28 @@ ADD set-timezone.sh /etc/my_init.d/01_set_timezone.sh
 RUN chmod +x /etc/my_init.d/01_set_timezone.sh
 ADD set-host-docker-internal.sh /etc/my_init.d/02_set_host_docker_internal.sh
 RUN chmod +x /etc/my_init.d/02_set_host_docker_internal.sh
-ADD service-permissions.sh /etc/my_init.d/03_service_permissions.sh
-RUN chmod +x /etc/my_init.d/03_service_permissions.sh
-
 RUN mkdir -p /etc/service/sidekiq
 ADD run-sidekiq.sh /etc/service/sidekiq/run
 RUN chmod +x /etc/service/sidekiq/run
 
 ADD logrotate-logs /etc/logrotate.d/logs
+RUN sed -i "s/DORA_USER_WILL_BE_REPLACED_BY_DOCKERFILE/$DORA_USER/g" /etc/logrotate.d/logs
 RUN chmod 0644 /etc/logrotate.d/logs
 
-# Install either the dummy SSH key or the configured one and unlock the 'dora' user
+# Install either the dummy SSH key or the configured one and unlock the $DORA_USER
 ADD sshd_config /etc/ssh/sshd_config
 RUN rm -f /etc/service/sshd/down &&\
-    passwd -u dora
+    passwd -u $DORA_USER
 ADD ${PUBLIC_KEY} /tmp/key.pub
-RUN cat /tmp/key.pub >> /home/dora/.ssh/authorized_keys &&\
+RUN cat /tmp/key.pub >> /home/$DORA_USER/.ssh/authorized_keys &&\
     rm -f /tmp/key.pub &&\
-    chown dora:dora /home/dora/.ssh/authorized_keys &&\
-    chmod 0700 /home/dora/.ssh &&\
-    chmod 0600 /home/dora/.ssh/authorized_keys
+    chown $DORA_USER:$DORA_USER /home/$DORA_USER/.ssh/authorized_keys &&\
+    chmod 0700 /home/$DORA_USER/.ssh &&\
+    chmod 0600 /home/$DORA_USER/.ssh/authorized_keys
 
-RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
+# Setting the PATH variable via /etc/container_environment does not work;
+# see 
+RUN echo "PATH=/home/$DORA_USER/rails/bin:\$PATH" >> /home/$DORA_USER/.profile
 
-# Clean up APT when done.
-# RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-WORKDIR /home/dora/rails
+# USER $DORA_USER
+WORKDIR /home/$DORA_USER/rails

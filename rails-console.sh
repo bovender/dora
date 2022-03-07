@@ -3,16 +3,15 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-if [[ $(id -u -n) != dora ]]; then
-  echo "Script was invoked by user '$(id -u -n)'; re-invoking as 'dora'..."
+source /etc/container_environment.sh
+if [[ $(id -u -n) != $DORA_USER ]]; then
+  echo "Script was invoked by user '$(id -u -n)'; re-invoking as '$DORA_USER'..."
   echo
-  exec setuser dora $0
+  exec setuser $DORA_USER $0
 fi
-
-APP_DIR=/home/dora/rails
 
 echo "# dora console helper for Rails"
 echo "# PASSENGER_APP_ENV=$PASSENGER_APP_ENV"
-echo "# Launching Rails console in $APP_DIR, please wait..."
-cd $APP_DIR
+echo "# Launching Rails console in $RAILS_DIR, please wait..."
+cd $RAILS_DIR
 bin/rails c -e $PASSENGER_APP_ENV

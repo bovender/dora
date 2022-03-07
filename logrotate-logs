@@ -1,6 +1,7 @@
 # Logrotate configuration for mail log
 # Managed by Dora: https://github.com/bovender/dora
 /shared/log/*.log {
+  su DORA_USER_WILL_BE_REPLACED_BY_DOCKERFILE DORA_USER_WILL_BE_REPLACED_BY_DOCKERFILE
   rotate 14
   daily
   missingok

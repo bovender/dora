@@ -4,17 +4,11 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-if [[ $(id -u -n) != dora ]]; then
-  echo "Script was invoked by user '$(id -u -n)'; re-invoking as 'dora'..."
-  echo
-  exec setuser dora $0
-fi
-
+source /etc/container_environment.sh
 echo "# dora app upgrade script"
 
-APP_DIR=/home/dora/rails
-LOCK_PRIMARY=/home/dora/upgrade-lock.primary
-LOCK_SECONDARY=/home/dora/upgrade-lock.secondary
+LOCK_PRIMARY=/home/$DORA_USER/upgrade-lock.primary
+LOCK_SECONDARY=/home/$DORA_USER/upgrade-lock.secondary
 WAIT_SECONDS=300
 WAIT_INTERVAL=30
 E_UPGRADE_LOCKED=1
@@ -83,7 +77,7 @@ function upgrade {
   bundle exec rails db:migrate &&\
   bundle exec rails assets:precompile &&\
   git describe --always > tmp/version &&\
-  passenger-config restart-app $APP_DIR &&\
+  passenger-config restart-app $RAILS_DIR &&\
   set +x &&\
   echo -e "\n\n***** UPGRADE SUCCEEDED! :-) *****\n"
 }
@@ -96,12 +90,26 @@ function rollback {
   git reset --hard $PREVIOUS_VERSION
 }
 
-check_lock
-set -x
-cd $APP_DIR
-PREVIOUS_VERSION=$(git describe 2>/dev/null || git rev-parse HEAD)
-sv stop sidekiq
-pull && (upgrade || rollback)
-sv start sidekiq
-set +x
-release_lock
+function main {
+  check_lock
+  set -x
+  cd $RAILS_DIR
+  PREVIOUS_VERSION=$(git describe 2>/dev/null || git rev-parse HEAD)
+  sudo sv stop sidekiq
+  pull && (upgrade || rollback)
+  sudo sv start sidekiq
+  set +x
+  release_lock
+}
+
+if [ "$2" ]; then
+  echo "Two command-line arguments given:"
+  echo "- redirecting stdout to $1"
+  echo "- redirecting stderr to $2"
+  main 1> "$1" 2> "$2"
+elif [ "$1" ]; then
+  echo "Command-line argument given, redirecting stdout to $1"
+  main > "$1"
+else
+  main
+fi

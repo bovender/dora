@@ -4,6 +4,9 @@
 
 ### Improved
 
+- It is now possible to define the user name as well as UID and GID of the
+  main user running the container. By default, this will be user `dora` with
+  UID 1000 and GID 1000.
 - Upgraded `baseimage-docker` to [rel-2.0.0](https://github.com/phusion/passenger-docker/releases/tag/rel-2.0.0).
 - It is now possible to bootstrap a new Rails application, plugin or whatever
   because the script that bootstraps the container no longer errors out if there
