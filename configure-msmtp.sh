@@ -4,14 +4,14 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-
+source /etc/container_environment.sh
 echo "# dora configuring msmtp"
 MSMTPRC=/etc/msmtprc
 
 if [[ $(id -u) != 0 ]]; then
   echo "Script was invoked by user '$(id -u -n)'; re-invoking with sudo..."
   echo
-  sudo $0
+  exec sudo $0
 fi
 
 function show_help() {
@@ -41,10 +41,10 @@ done
 
 if [[ $RAILS_SMTP_HOST == "" ]]; then
   echo "FATAL: environment variable \$RAILS_SMTP_HOST is empty!"
-  exit
+  exit 1
 elif [[ -a $MSMTPRC && $FORCE != "1" ]]; then
   echo "FATAL: $MSMTPRC exists; use -f or --force to overwrite"
-  exit
+  exit 1
 else
   [[ -a $MSMTPRC ]] && echo "WARNING: $MSMTPRC exists; forcing overwrite!"
   # Note that the heredoc lines must be preceded by true tabs
