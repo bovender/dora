@@ -101,6 +101,9 @@ RUN chmod +x /usr/local/bin/dora-status.sh
 ADD send-dora-status-mail.sh /usr/local/bin/send-dora-status-mail.sh
 RUN chmod +x /usr/local/bin/send-dora-status-mail.sh
 
+ADD bootstrap-script.sh /usr/local/bin/bootstrap-script.sh
+RUN chmod +x /usr/local/bin/bootstrap-script.sh
+
 RUN mkdir -p /etc/my_init.d
 ADD bootstrap-container.sh /etc/my_init.d/10_bootstrap_container.sh
 RUN chmod +x /etc/my_init.d/10_bootstrap_container.sh

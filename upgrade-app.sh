@@ -4,7 +4,7 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-source /etc/container_environment.sh
+source bootstrap-script.sh
 echo "# dora app upgrade script"
 
 LOCK_PRIMARY=/home/$DORA_USER/upgrade-lock.primary

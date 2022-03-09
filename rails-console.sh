@@ -3,7 +3,7 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-source /etc/container_environment.sh
+source bootstrap-script.sh
 if [[ $(id -u -n) != $DORA_USER ]]; then
   echo "Script was invoked by user '$(id -u -n)'; re-invoking as '$DORA_USER'..."
   echo

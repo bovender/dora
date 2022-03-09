@@ -4,7 +4,7 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
-source /etc/container_environment.sh
+source bootstrap-script.sh
 if [[ $(id -u -n) != $DORA_USER ]]; then
   echo "Script was invoked by user '$(id -u -n)'; re-invoking as '$DORA_USER'..."
   echo
@@ -23,7 +23,7 @@ dora-banner.sh | grep -v _PASS | sudo tee /etc/ssh/dora-banner >/dev/null
 FLAG_FILE=/bootstrapped
 if [ -a $FLAG_FILE ]; then
   DATE=$(cat $FLAG_FILE)
-  echo "This container has already been bootstrapped on $DATE." | tee -a /etc/ssh/dora-banner
+  echo "This container has already been bootstrapped on $DATE." | sudo tee -a /etc/ssh/dora-banner
   exit
 fi
 
