@@ -56,7 +56,8 @@ else
 		user $RAILS_SMTP_USER
 		from $RAILS_SMTP_FROM
 		password $RAILS_SMTP_PASS
-		tls_starttls
+    tls on
+		tls_starttls off
 		EOF
   chown root:root $MSMTPRC
   chmod 0600 $MSMTPRC

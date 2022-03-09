@@ -24,6 +24,8 @@
   "master" and "slave" terminology on the one hand and "master" as in
   "someone is professionally trained to do something really well" on the other
   (in Germany, "Meister" is a professional title).
+- The msmtp configuration now uses TLS, rather than STARTSSL, to communicate
+  with the SMTP server.
 
 ### Fixed
 
