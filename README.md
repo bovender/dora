@@ -1,3 +1,4 @@
+<!-- TOC ignore:true -->
 # dora
 
 <!-- TOC ignore:true -->
@@ -77,6 +78,9 @@ Customization is mostly done with environment variables.
 | Variable                  | Use                                                                                                                   | Default      |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------ |
 | `APP_NAME`                | Application name                                                                                                      | `app`        |
+| `DORA_USER`               | Main user that runs the Rails application                                                                             | `dora`       |
+| `DORA_UID`                | UID of the user running the Rails application                                                                         | `33`         |
+| `DORA_GID`                | GID of the user running the Rails application                                                                         | `33`         |
 | `PASSENGER_APP_ENV`       | Rails environment (this is a `passenger-docker` variable)                                                             | `production` |
 | `RAILS_PRECOMPILE_ASSETS` | Whether to precompile Rails assets                                                                                    | `true`       |
 | `GIT_PULL`                | Indicates whether to clone and pull the app from a Git repository (*must* be `false` to suppress cloning and pulling) | `true`       |
