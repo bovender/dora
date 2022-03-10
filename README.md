@@ -25,45 +25,48 @@ can be found at [Discourse][].
 ## Outline
 <!-- TOC -->
 
-- [Current versions of third-party components](#current-versions-of-third-party-components)
-- [Customization](#customization)
-  - [Environment variables](#environment-variables)
-  - [Build argument](#build-argument)
-  - [YAML snippet for docker-compose](#yaml-snippet-for-docker-compose)
-  - [Using ENV in your Rails app](#using-env-in-your-rails-app)
-  - [Reverse proxy](#reverse-proxy)
-- [Sidekiq](#sidekiq)
-- [Upgrading the app](#upgrading-the-app)
-- [Data persistence](#data-persistence)
-- [SSH access](#ssh-access)
-- [wkhtmltopdf support](#wkhtmltopdf-support)
-- [Status reports](#status-reports)
-- [Development and testing](#development-and-testing)
-  - [MailHog](#mailhog)
-- [Container time zone](#container-time-zone)
-- [Logrotate](#logrotate)
-- [Troubleshooting](#troubleshooting)
-  - [Sending mail](#sending-mail)
-  - [Receiving mail](#receiving-mail)
-  - [Database configuration](#database-configuration)
-  - [SMTP configuration](#smtp-configuration)
-  - [Required gems](#required-gems)
-  - [Sidekiq configuration](#sidekiq-configuration)
-  - [Avoiding confusion](#avoiding-confusion)
-- [Further reading](#further-reading)
-- [License](#license)
+- [dora](#dora)
+  - [*DO*cker container for *RA*ils](#docker-container-for-rails)
+  - [Outline](#outline)
+  - [Current versions of third-party components](#current-versions-of-third-party-components)
+  - [Customization](#customization)
+    - [Environment variables](#environment-variables)
+    - [Build argument](#build-argument)
+    - [YAML snippet for docker-compose](#yaml-snippet-for-docker-compose)
+    - [Using ENV in your Rails app](#using-env-in-your-rails-app)
+    - [Reverse proxy](#reverse-proxy)
+  - [Sidekiq](#sidekiq)
+  - [Upgrading the app](#upgrading-the-app)
+  - [Data persistence](#data-persistence)
+  - [SSH access](#ssh-access)
+  - [wkhtmltopdf support](#wkhtmltopdf-support)
+  - [Status reports](#status-reports)
+  - [Development and testing](#development-and-testing)
+    - [MailHog](#mailhog)
+  - [Container time zone](#container-time-zone)
+  - [Logrotate](#logrotate)
+  - [Troubleshooting](#troubleshooting)
+    - [Sending mail](#sending-mail)
+    - [Receiving mail](#receiving-mail)
+    - [Database configuration](#database-configuration)
+    - [SMTP configuration](#smtp-configuration)
+    - [Required gems](#required-gems)
+    - [Sidekiq configuration](#sidekiq-configuration)
+    - [Avoiding confusion](#avoiding-confusion)
+  - [Further reading](#further-reading)
+  - [License](#license)
 
 <!-- /TOC -->
 
 ## Current versions of third-party components
 
-| Domain                 | Component                                    |         |
-|------------------------|----------------------------------------------|--------:|
-| Dockerfile             | [phusion/passenger-ruby27][passenger-docker] | 1.0.11
-| install-wkhtmltopdf.sh | [wkhtmltopdf][]                              | 0.12.5
-| docker-compose.yml     | Postgres                                     | 11
-| docker-compose.yml     | Adminer                                      | 4.7
-| docker-compose.yml     | [Mailhog][]                                  | 1.0.0
+| Domain                 | Component                                    |        |
+| ---------------------- | -------------------------------------------- | -----: |
+| Dockerfile             | [phusion/passenger-ruby27][passenger-docker] | 1.0.11 |
+| install-wkhtmltopdf.sh | [wkhtmltopdf][]                              | 0.12.5 |
+| docker-compose.yml     | Postgres                                     |     11 |
+| docker-compose.yml     | Adminer                                      |    4.7 |
+| docker-compose.yml     | [Mailhog][]                                  |  1.0.0 |
 
 ## Customization
 
@@ -71,44 +74,44 @@ Customization is mostly done with environment variables.
 
 ### Environment variables
 
-| Variable | Use | Default
-|------|------|------
-| `APP_NAME` | Application name | `app`
-| `PASSENGER_APP_ENV` | Rails environment (this is a `passenger-docker` variable) | `production`
-| `RAILS_PRECOMPILE_ASSETS` | Whether to precompile Rails assets | `true`
-| `GIT_PULL` | Indicates whether to clone and pull the app from a Git repository (*must* be `false` to suppress cloning and pulling) | `true`
-| `GIT_REPO` | URL of the Git repository |
-| `GIT_BRANCH` | Branch to check out of the Git repository | `main`
-| `GIT_USER` | Git user that has read access for the repository (opt.) |
-| `GIT_PASS` | Password for the Git user (opt.) |
-| `RAILS_DB_HOST` | Database host | `db`
-| `RAILS_DB_NAME` | Database name | `$APP_NAME`
-| `RAILS_DB_USER` | Database user | `$APP_NAME`
-| `RAILS_DB_PASS` | Database password |
-| `RAILS_SMTP_HOST` | SMTP server |
-| `RAILS_SMTP_PORT` | SMTP port | 587
-| `RAILS_SMTP_USER` | SMTP user name | `$APP_NAME`
-| `RAILS_SMTP_PASS` | SMTP password |
-| `RAILS_SMTP_FROM` | FROM address for [system messages](#status-reports) |
-| `EMAIL_REPORTS_TO` | Optional e-mail recipient for daily [status reports](#status-reports) |
-| `SECRET_KEY_BASE` | Rails' secret key base |
-| `TIMEZONE` | Time zone of the container | `UCT`
-| `NO_WKHTMLTOPDF` | Do not attempt to install [wkhtmltopdf][] | (empty)
-| `WKHTMLTOPDF_URL` | Download URL for [wkhtmltopdf][] |
-| `WEBHOOK_SECRET` | Secret token that can we used for webhooks (not used by Dora) |
+| Variable                  | Use                                                                                                                   | Default      |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `APP_NAME`                | Application name                                                                                                      | `app`        |
+| `PASSENGER_APP_ENV`       | Rails environment (this is a `passenger-docker` variable)                                                             | `production` |
+| `RAILS_PRECOMPILE_ASSETS` | Whether to precompile Rails assets                                                                                    | `true`       |
+| `GIT_PULL`                | Indicates whether to clone and pull the app from a Git repository (*must* be `false` to suppress cloning and pulling) | `true`       |
+| `GIT_REPO`                | URL of the Git repository                                                                                             |
+| `GIT_BRANCH`              | Branch to check out of the Git repository                                                                             | `main`       |
+| `GIT_USER`                | Git user that has read access for the repository (opt.)                                                               |
+| `GIT_PASS`                | Password for the Git user (opt.)                                                                                      |
+| `RAILS_DB_HOST`           | Database host                                                                                                         | `db`         |
+| `RAILS_DB_NAME`           | Database name                                                                                                         | `$APP_NAME`  |
+| `RAILS_DB_USER`           | Database user                                                                                                         | `$APP_NAME`  |
+| `RAILS_DB_PASS`           | Database password                                                                                                     |
+| `RAILS_SMTP_HOST`         | SMTP server                                                                                                           |
+| `RAILS_SMTP_PORT`         | SMTP port                                                                                                             | 587          |
+| `RAILS_SMTP_USER`         | SMTP user name                                                                                                        | `$APP_NAME`  |
+| `RAILS_SMTP_PASS`         | SMTP password                                                                                                         |
+| `RAILS_SMTP_FROM`         | FROM address for [system messages](#status-reports)                                                                   |
+| `EMAIL_REPORTS_TO`        | Optional e-mail recipient for daily [status reports](#status-reports)                                                 |
+| `SECRET_KEY_BASE`         | Rails' secret key base                                                                                                |
+| `TIMEZONE`                | Time zone of the container                                                                                            | `UCT`        |
+| `NO_WKHTMLTOPDF`          | Do not attempt to install [wkhtmltopdf][]                                                                             | (empty)      |
+| `WKHTMLTOPDF_URL`         | Download URL for [wkhtmltopdf][]                                                                                      |
+| `WEBHOOK_SECRET`          | Secret token that can we used for webhooks (not used by Dora)                                                         |
 
 ### Build argument
 
 There is one argument that can be used during image build:
 
-| Argument | Use | Default
-|----------|-----|---------
-| `PUBLIC_KEY` | Public SSH key that will be added to `/home/dora/.ssh/authorized_keys` | `unusable.pub`
+| Argument     | Use                                                                    | Default        |
+| ------------ | ---------------------------------------------------------------------- | -------------- |
+| `PUBLIC_KEY` | Public SSH key that will be added to `/home/dora/.ssh/authorized_keys` | `unusable.pub` |
 
 The repository contains an `unusable_pub` key whose private key has been
 discarded (promise! ;-) ). Its sole purpose is to be act as a dummy key in the
 repository. To use your own key, set the `PUBLIC_KEY` argument to the path of
-the _public_ key and store the private key in a safe place. NB: The public key
+the *public* key and store the private key in a safe place. NB: The public key
 must be in Dora's directory because it must be sent to the Docker daemon
 along with the rest of the build context. Files ending with `.pub` are ignored
 in the repository.
@@ -335,7 +338,7 @@ User not allowed dora because account is locked
 
 Dora configures `sshd` to not allow root logins and not allow password logins.
 
-To _ssh_ from a workstation into the container that is running on a server,
+To *ssh* from a workstation into the container that is running on a server,
 make use of the `ProxyCommand` configuration option of OpenSSH:
 
 ```bash
@@ -380,8 +383,8 @@ To use `dora` for development and testing, you may want to set `$GIT_PULL` to
 `false` and mount your entire Rails application's directory onto `/home/dora`.
 
 With `$GIT_PULL` set to `false`, it is assumed that the entire `/home/dora/rails`
-directory is a mounted Docker volume. The bootstrapping script will _not_ link
-directories to `/shared/...`. It _will_ however set Bundler's `path` config
+directory is a mounted Docker volume. The bootstrapping script will *not* link
+directories to `/shared/...`. It *will* however set Bundler's `path` config
 option to `vendor/bundle` (even though it does not set `deployment` mode), so
 that Gems are saved in the mounted volume. This speeds up rebuilding the
 container.
@@ -409,7 +412,7 @@ file to adjust MailHog to your needs.
 
 `passenger-docker` does not configure a time zone for the container. Dora does
 do it by installing the `tzdata` package and supporting a `$TIMEZONE` variable.
-This variable _must_ be set to a directory and file unter `/usr/share/zoneinfo`,
+This variable *must* be set to a directory and file unter `/usr/share/zoneinfo`,
 e.g. `Europe/Berlin`.
 
 To see all possible values for `$TIMEZONE`, issue:
@@ -532,10 +535,10 @@ distinction between an image and a container. However, this distinction is
 quite important in practice:
 
 When the container is being built, any and all external dependencies such as
-mounted volumes and of course the database server are _not available_. This
+mounted volumes and of course the database server are *not available*. This
 seems trivial, but I struggled with it initially.
 
-The _container_ on the other hand has all these dependencies available, but it
+The *container* on the other hand has all these dependencies available, but it
 may need some initial bootstrapping when it is first started. [Discourse][]
 takes care of this with an external control script called `launcher`. I prefer
 to have my container as atomic as possible. Therefore I decided to place the
