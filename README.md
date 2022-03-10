@@ -80,25 +80,25 @@ Customization is mostly done with environment variables.
 | `PASSENGER_APP_ENV`       | Rails environment (this is a `passenger-docker` variable)                                                             | `production` |
 | `RAILS_PRECOMPILE_ASSETS` | Whether to precompile Rails assets                                                                                    | `true`       |
 | `GIT_PULL`                | Indicates whether to clone and pull the app from a Git repository (*must* be `false` to suppress cloning and pulling) | `true`       |
-| `GIT_REPO`                | URL of the Git repository                                                                                             |
+| `GIT_REPO`                | URL of the Git repository                                                                                             |              |
 | `GIT_BRANCH`              | Branch to check out of the Git repository                                                                             | `main`       |
-| `GIT_USER`                | Git user that has read access for the repository (opt.)                                                               |
-| `GIT_PASS`                | Password for the Git user (opt.)                                                                                      |
+| `GIT_USER`                | Git user that has read access for the repository (opt.)                                                               |              |
+| `GIT_PASS`                | Password for the Git user (opt.)                                                                                      |              |
 | `RAILS_DB_HOST`           | Database host                                                                                                         | `db`         |
 | `RAILS_DB_NAME`           | Database name                                                                                                         | `$APP_NAME`  |
 | `RAILS_DB_USER`           | Database user                                                                                                         | `$APP_NAME`  |
-| `RAILS_DB_PASS`           | Database password                                                                                                     |
-| `RAILS_SMTP_HOST`         | SMTP server                                                                                                           |
+| `RAILS_DB_PASS`           | Database password                                                                                                     |              |
+| `RAILS_SMTP_HOST`         | SMTP server                                                                                                           |              |
 | `RAILS_SMTP_PORT`         | SMTP port                                                                                                             | 587          |
 | `RAILS_SMTP_USER`         | SMTP user name                                                                                                        | `$APP_NAME`  |
-| `RAILS_SMTP_PASS`         | SMTP password                                                                                                         |
-| `RAILS_SMTP_FROM`         | FROM address for [system messages](#status-reports)                                                                   |
-| `EMAIL_REPORTS_TO`        | Optional e-mail recipient for daily [status reports](#status-reports)                                                 |
-| `SECRET_KEY_BASE`         | Rails' secret key base                                                                                                |
+| `RAILS_SMTP_PASS`         | SMTP password                                                                                                         |              |
+| `RAILS_SMTP_FROM`         | FROM address for [system messages](#status-reports)                                                                   |              |
+| `EMAIL_REPORTS_TO`        | Optional e-mail recipient for daily [status reports](#status-reports)                                                 |              |
+| `SECRET_KEY_BASE`         | Rails' secret key base                                                                                                |              |
 | `TIMEZONE`                | Time zone of the container                                                                                            | `UCT`        |
 | `NO_WKHTMLTOPDF`          | Do not attempt to install [wkhtmltopdf][]                                                                             | (empty)      |
-| `WKHTMLTOPDF_URL`         | Download URL for [wkhtmltopdf][]                                                                                      |
-| `WEBHOOK_SECRET`          | Secret token that can we used for webhooks (not used by Dora)                                                         |
+| `WKHTMLTOPDF_URL`         | Download URL for [wkhtmltopdf][]                                                                                      |              |
+| `WEBHOOK_SECRET`          | Secret token that can we used for webhooks (not used by Dora)                                                         |              |
 
 ### Build argument
 
