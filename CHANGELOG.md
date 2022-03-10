@@ -1,13 +1,14 @@
 # dora changelog
 
-## Unreleased
+## Version 4.0.0 (2022-03-10)
 
 ### Improved
 
+- Use Ruby 3.0.
+- Upgraded `baseimage-docker` to [rel-2.1.0](https://github.com/phusion/passenger-docker/releases/tag/rel-2.1.0).
 - It is now possible to define the user name as well as UID and GID of the
   main user running the container. By default, this will be user `dora` with
   UID 1000 and GID 1000.
-- Upgraded `baseimage-docker` to [rel-2.0.0](https://github.com/phusion/passenger-docker/releases/tag/rel-2.0.0).
 - It is now possible to bootstrap a new Rails application, plugin or whatever
   because the script that bootstraps the container no longer errors out if there
   is no Rails application present. Instead, when configured not to pull any Git
