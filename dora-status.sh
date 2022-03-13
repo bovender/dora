@@ -40,6 +40,6 @@ done
 
 echo -e "\n\n## Pending package upgrades\n"
 echo -e "(NB: Package list is not automatically updated for this listing.)\n"
-apt list --upgradable
+apt-get --simulate dist-upgrade
 
 echo -e "\n---"
