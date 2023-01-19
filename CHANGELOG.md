@@ -8,6 +8,12 @@
   to developt a Rails app with VS Code. It also defines other services such
   as Mailhog as dependencies.
 
+## Changed
+
+- The upgrade-app.sh script now calls into the Rails code to trigger a status
+  e-mail when the upgrade has finished. This addresses issues with e-mail
+  reports not being sent becuase the app was restarted inbetween.
+
 ## Version 4.0.0 (2022-03-10)
 
 ### Improved

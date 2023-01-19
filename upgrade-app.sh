@@ -4,14 +4,29 @@
 # This script is part of dora -- Docker container for Rails
 # https://github.com/bovender/dora
 
+# If a command-line argument is given, capture all output.
+# This will also cause the script to invoke DoraWebUpgrader.Reporter.run
+# before it finishes.
+if [ ! -z "$1" ]; then
+  LOGFILE=$1
+  # https://unix.stackexchange.com/q/61931/110635
+  exec > >(tee "$LOGFILE") 2>&1
+fi
+
 source bootstrap-script.sh
 echo "# dora app upgrade script"
+
+# Change to the Rails directory and make sure we return to where we were
+# when the script exits.
+pushd $RAILS_DIR
+trap popd EXIT
 
 LOCK_PRIMARY=/home/$DORA_USER/upgrade-lock.primary
 LOCK_SECONDARY=/home/$DORA_USER/upgrade-lock.secondary
 WAIT_SECONDS=300
 WAIT_INTERVAL=30
 E_UPGRADE_LOCKED=1
+MESSAGE=undefined
 
 if [[ -z $RAILS_ENV ]]; then
   echo "WARNING: \$RAILS_ENV is empty! This is probably not what you want."
@@ -79,11 +94,13 @@ function upgrade {
   git describe --always > tmp/version &&\
   passenger-config restart-app $RAILS_DIR &&\
   set +x &&\
+  MESSAGE=succeeded
   echo -e "\n\n***** UPGRADE SUCCEEDED! :-) *****\n"
 }
 
 function rollback {
   set +x
+  MESSAGE=failed
   echo "***** UPGRADE FAILED! :-( *****"
   echo "Rolling back to $PREVIOUS_VERSION"
   set -x
@@ -100,16 +117,11 @@ function main {
   sudo sv start sidekiq
   set +x
   release_lock
+
+  if [ -z "$LOGFILE" ]; then
+    [ -z "$RAILS_ENV" ] && RUNNER_ENV="-e $RAILS_ENV"
+    bin/rails runner $RUNNER_ENV DoraWebUpgrader.Reporter.run "$MESSAGE" "$LOGFILE"
+  fi
 }
 
-if [ "$2" ]; then
-  echo "Two command-line arguments given:"
-  echo "- redirecting stdout to $1"
-  echo "- redirecting stderr to $2"
-  main 1> "$1" 2> "$2"
-elif [ "$1" ]; then
-  echo "Command-line argument given, redirecting stdout to $1"
-  main > "$1"
-else
-  main
-fi
+main
