@@ -1,5 +1,13 @@
 # dora changelog
 
+## Unreleased
+
+### New
+
+- The docker-compose.yml file now declares a `dev` service which can be used
+  to developt a Rails app with VS Code. It also defines other services such
+  as Mailhog as dependencies.
+
 ## Version 4.0.0 (2022-03-10)
 
 ### Improved

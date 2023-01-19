@@ -2,7 +2,7 @@
 # a Docker environment for Rails development.
 version: "3.7"
 services:
-  rails:
+  rails: &rails
     build:
       context: .
       args:
@@ -13,35 +13,52 @@ services:
     volumes:
       - "${DORA_HOST_APP_DIR}:/home/dora/rails/"
       - "${DORA_HOST_VOL_DIR}/tmp/:/tmp/"
-    environment:
+    environment: &rails_env
       # By omitting the values, the variables are taken
       # from the current environment. This requires an
       # existing `.env` file (or any other means of
       # setting the variables).
-      - APP_NAME
-      - DORA_HOST_APP_DIR
-      - DORA_HOST_VOL_DIR
-      - EMAIL_REPORTS_TO
-      - GIT_PULL
-      - PASSENGER_APP_ENV
-      - RAILS_PRECOMPILE_ASSETS
-      - RAILS_DB_HOST
-      - RAILS_DB_NAME
-      - RAILS_DB_USER
-      - RAILS_DB_PASS
-      - RAILS_SMTP_HOST
-      - RAILS_SMTP_PORT
-      - RAILS_SMTP_USER
-      - RAILS_SMTP_PASS
-      - RAILS_SMTP_FROM
-      - TIMEZONE
-      - DORA_USER
-      - DORA_UID
-      - DORA_GID
-      - DORA_WEB_UPGRADER_SECRET
+      APP_NAME:
+      DORA_HOST_APP_DIR:
+      DORA_HOST_VOL_DIR:
+      EMAIL_REPORTS_TO:
+      GIT_PULL:
+      PASSENGER_APP_ENV:
+      RAILS_PRECOMPILE_ASSETS:
+      RAILS_DB_HOST:
+      RAILS_DB_NAME:
+      RAILS_DB_USER:
+      RAILS_DB_PASS:
+      RAILS_SMTP_HOST:
+      RAILS_SMTP_PORT:
+      RAILS_SMTP_USER:
+      RAILS_SMTP_PASS:
+      RAILS_SMTP_FROM:
+      TIMEZONE:
+      DORA_USER:
+      DORA_UID:
+      DORA_GID:
+      DORA_WEB_UPGRADER_SECRET:
     depends_on:
       - db
       - redis
+  dev:
+    <<: *rails
+    command: bundle exec rdebug-ide --debug --host 0.0.0.0 --port 1234 -- bin/rails server -p 3000 -b 0.0.0.0
+    ports:
+      - "127.0.0.1:1234:1234"
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:43447:43447"
+    depends_on:
+      - adminer
+      - db
+      - mailhog
+      - redis
+      - selenium
+    environment:
+      <<: *rails_env
+      WEB_CONCURRENCY: 0
+      RAILS_MAX_THREADS: 1
   db:
     image: postgres:11
     volumes:
