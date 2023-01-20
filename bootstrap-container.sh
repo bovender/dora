@@ -35,7 +35,10 @@ set -x -e
 # See: https://github.com/phusion/baseimage-docker#environment_variables
 echo -e "${APP_DIR}/bin:$PATH" | sudo tee /etc/container_environment/PATH >/dev/null
 
-configure-msmtp.sh --force
+ls -ld /home/dora
+ls -ld /home/dora/rails
+
+configure-msmtp.sh -f
 # Placing a script 'send-dora-status-mail' into /etc/cron.daily did not work
 sudo sed -i '/begin dora jobs/,/end dora jobs/d' /etc/crontab
 # MUST have real tab characters rather than spaces in front of the heredoc lines
