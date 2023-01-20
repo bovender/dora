@@ -136,6 +136,7 @@ RUN cat /tmp/key.pub >> /home/$DORA_USER/.ssh/authorized_keys &&\
 # see 
 RUN echo "PATH=/home/$DORA_USER/rails/bin:\$PATH" >> /home/$DORA_USER/.profile
 
+
 # USER $DORA_USER
 WORKDIR $RAILS_DIR
-RUN chown $DORA_USER:$DORA_USER -R /home/$DORA_USER
+RUN chown -R $DORA_USER:$DORA_USER /home/$DORA_USER
