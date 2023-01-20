@@ -1,5 +1,5 @@
 # See https://github.com/phusion/passenger-docker
-FROM phusion/passenger-ruby30:2.1.0
+FROM phusion/passenger-ruby30:2.4.1
 
 ARG PUBLIC_KEY="unusable_pub"
 ARG DORA_USER="dora"

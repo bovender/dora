@@ -10,6 +10,7 @@
 
 ## Changed
 
+- Upgrade passenger-docker to [rel-2.4.1](https://github.com/phusion/passenger-docker/releases/tag/rel-2.4.1).
 - The upgrade-app.sh script now calls into the Rails code to trigger a status
   e-mail when the upgrade has finished. This addresses issues with e-mail
   reports not being sent becuase the app was restarted inbetween.
