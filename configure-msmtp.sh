@@ -11,6 +11,7 @@ MSMTPRC=/etc/msmtprc
 if [[ $(id -u) != 0 ]]; then
   echo "Script was invoked by user '$(id -u -n)'; re-invoking with sudo..."
   echo
+  set -x
   exec sudo "$0" "$@"
 fi
 
